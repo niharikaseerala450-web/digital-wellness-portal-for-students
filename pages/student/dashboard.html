@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard | AuraGrowth</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/landing.css">
+
+    <!-- Embedded AuraBot Widget Styling -->
+    <style>
+        #aura-bot-launcher {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #6366f1, #06b6d4);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.45);
+            z-index: 1050;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        #aura-bot-launcher:hover { 
+            transform: scale(1.08); 
+            box-shadow: 0 10px 28px rgba(99, 102, 241, 0.6);
+        }
+        #aura-chat-window {
+            position: fixed;
+            bottom: 92px;
+            right: 24px;
+            width: 360px;
+            max-width: calc(100vw - 36px);
+            height: 480px;
+            border-radius: 16px;
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(14px);
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.55);
+            display: none;
+            flex-direction: column;
+            z-index: 1050;
+            overflow: hidden;
+        }
+        #aura-chat-messages {
+            flex: 1;
+            padding: 14px;
+            overflow-y: auto;
+            font-size: 13.5px;
+            color: #f1f5f9;
+        }
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            line-height: 1.45;
+            max-width: 85%;
+            word-break: break-word;
+        }
+        .chat-user {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: #ffffff;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        .chat-bot {
+            background: rgba(255, 255, 255, 0.08);
+            color: #e2e8f0;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .bot-chip {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            font-size: 11.5px;
+            color: #38bdf8;
+            cursor: pointer;
+            margin: 2px;
+            transition: background 0.2s ease;
+        }
+        .bot-chip:hover { 
+            background: rgba(56, 189, 248, 0.18); 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <!-- Top Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-custom border-bottom border-secondary-subtle sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <span class="fs-4 gradient-text"><i class="fa-solid fa-brain me-2"></i>AuraGrowth</span>
+            </a>
+
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <button id="themeToggle" class="btn btn-glass p-2 px-3" title="Toggle Mode">
+                    <i class="fa-solid fa-circle-half-stroke"></i>
+                </button>
+
+                <div class="dropdown">
+                    <button class="btn btn-glass dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
+                        <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=student" alt="Avatar" width="28" height="28" class="rounded-circle bg-secondary">
+                        <span id="userName" class="small fw-semibold">Loading...</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-secondary-subtle">
+                        <li><h6 class="dropdown-header text-truncate" id="userEmail">student@example.com</h6></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Sign Out</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container Layout -->
+    <div class="container-fluid px-4 py-4">
+        <div class="row g-4">
+            <!-- Sidebar Links -->
+            <div class="col-lg-3 col-xl-2">
+                <div class="glass-panel p-3 d-flex flex-column gap-2">
+                    <a href="dashboard.html" class="btn btn-gradient text-start"><i class="fa-solid fa-gauge me-2"></i>Overview</a>
+                    <a href="habits.html" class="btn btn-glass text-start"><i class="fa-solid fa-bullseye me-2"></i>Goals & Habits</a>
+                    <a href="wellness.html" class="btn btn-glass text-start"><i class="fa-solid fa-spa me-2"></i>Yoga & Wellness</a>
+                    <a href="brain-games.html" class="btn btn-glass text-start"><i class="fa-solid fa-gamepad me-2"></i>Brain Games</a>
+                    <a href="wellness-log.html" class="btn btn-glass text-start"><i class="fa-solid fa-heart-pulse me-2"></i>Wellness Log</a>
+                    <a href="roadmaps.html" class="btn btn-glass text-start"><i class="fa-solid fa-map-location-dot me-2"></i>Roadmaps</a>
+                    <a href="rewards.html" class="btn btn-glass text-start"><i class="fa-solid fa-medal me-2"></i>Rewards</a>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <div class="col-lg-9 col-xl-10">
+                <!-- Welcome Banner -->
+                <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h2 class="fw-bold mb-1">Welcome back to your workspace!</h2>
+                        <p class="text-secondary mb-0">Track your me ntal wellness, study consistency, and daily habits.</p>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="wellness.html" class="btn btn-glass"><i class="fa-solid fa-person-praying me-1"></i> Log Yoga/Movement</a>
+                        <a href="habits.html" class="btn btn-gradient"><i class="fa-solid fa-plus me-1"></i> Check Habits</a>
+                    </div>
+                </div>
+
+                <!-- Live Synced Metrics -->
+                <div class="row g-3 mb-4">
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="glass-panel p-3 text-center">
+                            <span class="text-secondary small fw-medium">Top Active Streak</span>
+                            <h3 class="fw-bold text-warning mt-2 mb-0" id="dashTopStreak">0 Days</h3>
+                            <small class="text-secondary"><i class="fa-solid fa-fire text-warning me-1"></i>Habit Consistency</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="glass-panel p-3 text-center">
+                            <span class="text-secondary small fw-medium">Habits Done Today</span>
+                            <h3 class="fw-bold text-success mt-2 mb-0" id="dashHabitsDone">0 / 0</h3>
+                            <small class="text-secondary" id="dashHabitPercentage">0% Completed</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="glass-panel p-3 text-center">
+                            <span class="text-secondary small fw-medium">Movement & Wellness XP</span>
+                            <h3 class="fw-bold text-info mt-2 mb-0" id="dashActivityXp">0 XP</h3>
+                            <small class="text-secondary"><i class="fa-solid fa-bolt text-info me-1"></i>Yoga & Activity</small>
+                        </div>
+                    </div>
+                    <div class="col-sm-6 col-xl-3">
+                        <div class="glass-panel p-3 text-center">
+                            <span class="text-secondary small fw-medium">Avg Focus Rating</span>
+                            <h3 class="fw-bold text-primary mt-2 mb-0" id="dashFocusScore">-- / 10</h3>
+                            <small class="text-secondary"><i class="fa-solid fa-brain text-primary me-1"></i>Weekly Audit</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Enrolled Roadmap Tracks Section -->
+                <div class="glass-panel p-4 mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                        <div>
+                            <h5 class="fw-bold text-white mb-0">
+                                <i class="fa-solid fa-graduation-cap text-info me-2"></i>My Learning Roadmaps
+                            </h5>
+                            <small class="text-secondary">Track your weekly exam progress and unlock specialization credentials</small>
+                        </div>
+                        <a href="roadmaps.html" class="btn btn-sm btn-glass"><i class="fa-solid fa-compass me-1"></i> All Tracks</a>
+                    </div>
+                    
+                    <div class="row g-3" id="dashboardRoadmapGrid">
+                        <!-- Instantly populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- Quick Navigation Action Cards -->
+                <div class="row g-3 mb-4">
+                    <div class="col-md-4">
+                        <a href="habits.html" class="text-decoration-none">
+                            <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-white mb-1 fw-semibold"><i class="fa-solid fa-calendar-check me-2 text-warning"></i>Habit Tracker</h6>
+                                    <small class="text-secondary">Build routines & maintain streaks</small>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-secondary"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="wellness.html" class="text-decoration-none">
+                            <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-white mb-1 fw-semibold"><i class="fa-solid fa-spa me-2 text-success"></i>Wellness & Yoga</h6>
+                                    <small class="text-secondary">Pranayama, stretching & audits</small>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-secondary"></i>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-md-4">
+                        <a href="brain-games.html" class="text-decoration-none">
+                            <div class="glass-card p-3 d-flex align-items-center justify-content-between">
+                                <div>
+                                    <h6 class="text-white mb-1 fw-semibold"><i class="fa-solid fa-gamepad me-2 text-info"></i>Brain Games</h6>
+                                    <small class="text-secondary">Memory, reaction & focus suite</small>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-secondary"></i>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Guidance / Action Area -->
+                <div class="row g-4">
+                    <div class="col-lg-8">
+                        <div class="glass-panel p-4 h-100">
+                            <h5 class="fw-bold mb-3"><i class="fa-solid fa-wand-magic-sparkles me-2 text-warning"></i>Suggested Daily Action</h5>
+                            <p class="text-secondary">Based on your recent study routines, take a 10-minute spine stretch or do a round of Surya Namaskar to release upper body tension before your next focus block.</p>
+                            <div class="d-flex gap-2 mt-3">
+                                <a href="wellness.html" class="btn btn-gradient btn-sm">Start Session (+20 XP)</a>
+                                <a href="brain-games.html" class="btn btn-glass btn-sm">Warm-up Mind</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4">
+                        <div class="glass-panel p-4 h-100 text-center">
+                            <h5 class="fw-bold mb-3">Pre-Study Focus Boost</h5>
+                            <i class="fa-solid fa-brain display-4 gradient-text mb-3"></i>
+                            <p class="text-secondary small">Warm up your working memory with a quick 2-minute memory match game.</p>
+                            <a href="brain-games.html" class="btn btn-glass w-100 btn-sm">Launch Brain Games</a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Static AI Assistant (AuraBot) Widget Markup -->
+    <div id="aura-bot-launcher" title="AuraBot Study AI">
+        <i class="fa-solid fa-robot"></i>
+    </div>
+
+    <div id="aura-chat-window">
+        <div class="p-3 border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.03);">
+            <div class="d-flex align-items-center gap-2">
+                <div class="rounded-circle p-1 bg-primary text-white d-flex align-items-center justify-content-center" style="width:28px; height:28px;">
+                    <i class="fa-solid fa-brain small"></i>
+                </div>
+                <div>
+                    <h6 class="mb-0 fw-bold text-white small">AuraBot Assistant</h6>
+                   
+                </div>
+            </div>
+            <button id="aura-close-btn" class="btn btn-sm text-secondary p-0"><i class="fa-solid fa-xmark fs-6"></i></button>
+        </div>
+
+        <div id="aura-chat-messages">
+            <div class="chat-bubble chat-bot">
+                Hi student! I'm AuraBot, your local study & wellness buddy. How can I guide you today?
+            </div>
+            <div class="mb-2">
+                <span class="bot-chip" onclick="sendAuraPrompt('How to practice DSA?')">💡 DSA Guide</span>
+                <span class="bot-chip" onclick="sendAuraPrompt('I feel stressed with exams')">🧘 Exam Stress</span>
+                <span class="bot-chip" onclick="sendAuraPrompt('How to build study habits?')">🎯 Habit Tips</span>
+            </div>
+        </div>
+
+        <form id="aura-chat-form" class="p-2 border-top border-secondary border-opacity-25 d-flex gap-2">
+            <input type="text" id="aura-user-input" class="form-control form-control-sm bg-transparent text-white border-secondary" placeholder="Ask AuraBot..." autocomplete="off">
+            <button type="submit" class="btn btn-primary btn-sm px-3"><i class="fa-solid fa-paper-plane"></i></button>
+        </form>
+    </div>
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config/supabase-config.js"></script>
+    <!-- Roadmap Progress Sync Engine -->
+    <script src="../../assets/js/modules/roadmap_progress.js"></script>
+    <script src="../../assets/js/app/dashboard.app.js"></script>
+
+    <!-- Roadmap Dashboard Live Cards Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var grid = document.getElementById('dashboardRoadmapGrid');
+            if (!grid) return;
+
+            var tracks = [
+                { id: 'fullstack', title: 'Full Stack Developer', icon: 'fa-layer-group', totalWeeks: 14, color: '#38bdf8' },
+                { id: 'java', title: 'Java Developer', icon: 'fa-mug-hot', totalWeeks: 14, color: '#f97316' },
+                { id: 'python', title: 'Python Developer', icon: 'fa-brands fa-python', totalWeeks: 14, color: '#eab308' },
+                { id: 'datascientist', title: 'Data Scientist', icon: 'fa-chart-pie', totalWeeks: 14, color: '#10b981' },
+                { id: 'ai_engineer', title: 'AI Engineer', icon: 'fa-brain', totalWeeks: 14, color: '#a855f7' },
+                { id: 'ml_engineer', title: 'Machine Learning Engineer', icon: 'fa-robot', totalWeeks: 14, color: '#ec4899' },
+                { id: 'core_cs_dsa', title: 'Core CS & DSA', icon: 'fa-code-branch', totalWeeks: 14, color: '#06b6d4' }
+            ];
+
+            function getTrackPassedCount(trackId) {
+                if (window.RoadmapProgress && typeof window.RoadmapProgress.computeTrackStats === 'function') {
+                    return window.RoadmapProgress.computeTrackStats(trackId, 14).passedCount || 0;
+                }
+                try {
+                    var raw = localStorage.getItem('aura_roadmap_progress');
+                    if (raw) {
+                        var parsed = JSON.parse(raw);
+                        if (parsed[trackId] && parsed[trackId].sections) {
+                            var passed = 0;
+                            Object.keys(parsed[trackId].sections).forEach(function(secKey) {
+                                if (parsed[trackId].sections[secKey].passed) passed++;
+                            });
+                            return passed;
+                        }
+                    }
+                } catch(e) {}
+                return 0;
+            }
+
+            function renderCards(cloudData) {
+                cloudData = cloudData || {};
+                var html = '';
+
+                tracks.forEach(function(trk) {
+                    var localPassed = getTrackPassedCount(trk.id);
+                    var cloudPassed = cloudData[trk.id] || 0;
+                    var effectivePassed = Math.max(localPassed, cloudPassed);
+                    var effectivePct = Math.round((effectivePassed / trk.totalWeeks) * 100);
+                    if (effectivePct > 100) effectivePct = 100;
+
+                    var isComplete = effectivePct >= 100;
+                    var badgeLabel = isComplete 
+                        ? '<span class="badge bg-success small"><i class="fa-solid fa-award me-1"></i>Completed</span>'
+                        : effectivePassed > 0 
+                            ? '<span class="badge bg-primary small">In Progress</span>'
+                            : '<span class="badge bg-secondary small">Not Started</span>';
+
+                    var actionButton = isComplete
+                        ? '<a href="roadmaps.html" class="btn btn-warning btn-sm w-100 fw-bold shadow-sm"><i class="fa-solid fa-award me-1"></i>View Certificate</a>'
+                        : '<a href="roadmaps.html" class="btn btn-outline-light btn-sm w-100">Continue Track <i class="fa-solid fa-arrow-right ms-1"></i></a>';
+
+                    html += 
+                        '<div class="col-md-6 col-xl-4">' +
+                            '<div class="glass-card p-3 h-100 d-flex flex-column border border-secondary border-opacity-25 rounded-3">' +
+                                '<div class="d-flex justify-content-between align-items-start mb-2">' +
+                                    '<div class="d-flex align-items-center gap-2">' +
+                                        '<div class="p-2 rounded-2" style="background: rgba(255,255,255,0.05);">' +
+                                            '<i class="' + trk.icon + ' fs-5" style="color: ' + trk.color + ';"></i>' +
+                                        '</div>' +
+                                        '<h6 class="text-white fw-bold mb-0">' + trk.title + '</h6>' +
+                                    '</div>' +
+                                    badgeLabel +
+                                '</div>' +
+                                '<div class="my-3">' +
+                                    '<div class="d-flex justify-content-between small text-secondary mb-1">' +
+                                        '<span>' + effectivePassed + ' of ' + trk.totalWeeks + ' Weeks Passed</span>' +
+                                        '<span class="fw-bold ' + (isComplete ? 'text-success' : 'text-info') + '">' + effectivePct + '%</span>' +
+                                    '</div>' +
+                                    '<div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">' +
+                                        '<div class="progress-bar ' + (isComplete ? 'bg-success' : 'bg-info') + '" style="width: ' + effectivePct + '%;"></div>' +
+                                    '</div>' +
+                                '</div>' +
+                                '<div class="mt-auto pt-2">' +
+                                    actionButton +
+                                '</div>' +
+                            '</div>' +
+                        '</div>';
+                });
+
+                grid.innerHTML = html;
+            }
+
+            renderCards();
+
+            setTimeout(async function() {
+                var client = window.sb || window.supabaseClient || null;
+                if (!client) return;
+                try {
+                    var auth = await client.auth.getUser();
+                    if (auth.data && auth.data.user) {
+                        var res = await client
+                            .from('student_roadmap_progress')
+                            .select('track_id, is_completed')
+                            .eq('is_completed', true);
+
+                        if (res.data && res.data.length > 0) {
+                            var cloudCounts = {};
+                            res.data.forEach(function(row) {
+                                cloudCounts[row.track_id] = (cloudCounts[row.track_id] || 0) + 1;
+                            });
+                            renderCards(cloudCounts);
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Supabase sync skipped:', e.message);
+                }
+            }, 300);
+        });
+    </script>
+
+    <!-- Static AI Assistant (AuraBot) Engine Script -->
+    <script>
+        var auraKnowledge = [
+            {
+                keywords: ['dsa', 'algorithm', 'leetcode', 'array', 'tree', 'graph', 'data structure', 'cs'],
+                reply: 'DSA preparation ki daily consistency chaala important!<br><br>' +
+                       '📌 <b>Recommended Strategy:</b><br>' +
+                       '1. Arrays, Strings & Two Pointers nunchi start cheyandi.<br>' +
+                       '2. Recursion & Sliding Window concepts practice cheyandi.<br>' +
+                       '3. Trees, Graphs & DP master cheyandi.<br><br>' +
+                       '👉 Check our <a href="roadmaps.html" class="text-info fw-bold">Core CS & DSA Track</a> to complete weekly modules!'
+            },
+            {
+                keywords: ['web', 'fullstack', 'frontend', 'backend', 'html', 'css', 'javascript', 'react', 'node'],
+                reply: 'Full Stack Developer avvadaniki 3-phase path follow avvandi:<br><br>' +
+                       '🌐 <b>Recommended Order:</b><br>' +
+                       '1. HTML5, Modern CSS, Responsive Design & JS ES6+.<br>' +
+                       '2. Backend APIs with Node/Express & Supabase/PostgreSQL.<br>' +
+                       '3. React.js state management & full project deployment.<br><br>' +
+                       '👉 Start practicing at <a href="roadmaps.html" class="text-info fw-bold">Full Stack Roadmap</a>.'
+            },
+            {
+                keywords: ['stress', 'anxious', 'anxiety', 'tired', 'burnout', 'headache', 'tension', 'relax', 'exhausted'],
+                reply: 'Exam stress & long study hours manage cheyadaniki chinna reset avasaram:<br><br>' +
+                       '🧘 <b>Quick Relief Tips:</b><br>' +
+                       '• 2-minutes <i>Nadi Shodhana Pranayama</i> (alternate nostril breathing) try cheyandi.<br>' +
+                       '• Take 20-20-20 rule: Every 20 mins, look 20 feet away for 20 seconds.<br><br>' +
+                       '👉 Launch a guided session at <a href="wellness.html" class="text-success fw-bold">Yoga & Wellness Studio</a>!'
+            },
+            {
+                keywords: ['habit', 'streak', 'routine', 'consistency', 'discipline', 'target'],
+                reply: 'Habits build cheyadam lo "Atomic Habits" rule chaala help avthundi:<br><br>' +
+                       '🎯 <b>Key Tip:</b> Keep it under 2 minutes first (e.g., solve just 1 easy problem daily). Daily streak break avvakunda unte automatic ga routine set avthundi.<br><br>' +
+                       '👉 Track your active goals at <a href="habits.html" class="text-warning fw-bold">Habit Tracker</a>.'
+            },
+            {
+                keywords: ['hi', 'hello', 'hey', 'namaste', 'morning', 'evening', 'help'],
+                reply: 'Hello! Nenu mee AuraGrowth AI Study Buddy 🤖.<br><br>' +
+                       'Nenu meeku coding roadmaps, study habits, focus tips, mariyu wellness guidance ivvagalanoo. Above quick prompt chips click cheyandi leda mee question type cheyandi!'
+            }
+        ];
+
+        var defaultBotReply = 'Nenu ee topic meedha inka update avtunanu! Kinda unna topics lo help adagandi:<br>' +
+                              '• <b>DSA & Coding Roadmaps</b><br>' +
+                              '• <b>Habit Building & Daily Streaks</b><br>' +
+                              '• <b>Exam Stress & Breathing Stretches</b>';
+
+        var launcher = document.getElementById('aura-bot-launcher');
+        var chatWin = document.getElementById('aura-chat-window');
+        var closeBtn = document.getElementById('aura-close-btn');
+        var chatForm = document.getElementById('aura-chat-form');
+        var chatInput = document.getElementById('aura-user-input');
+        var chatMessages = document.getElementById('aura-chat-messages');
+
+        launcher.onclick = function() {
+            var isHidden = chatWin.style.display === 'none' || chatWin.style.display === '';
+            chatWin.style.display = isHidden ? 'flex' : 'none';
+            if (isHidden) chatInput.focus();
+        };
+
+        closeBtn.onclick = function() {
+            chatWin.style.display = 'none';
+        };
+
+        function appendMessage(sender, text) {
+            var bubble = document.createElement('div');
+            bubble.className = 'chat-bubble ' + (sender === 'user' ? 'chat-user' : 'chat-bot');
+            bubble.innerHTML = text;
+            chatMessages.appendChild(bubble);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function getBotResponse(query) {
+            var q = query.toLowerCase();
+            for (var i = 0; i < auraKnowledge.length; i++) {
+                var item = auraKnowledge[i];
+                for (var k = 0; k < item.keywords.length; k++) {
+                    if (q.includes(item.keywords[k])) {
+                        return item.reply;
+                    }
+                }
+            }
+            return defaultBotReply;
+        }
+
+        window.sendAuraPrompt = function(promptText) {
+            appendMessage('user', promptText);
+
+            var indicator = document.createElement('div');
+            indicator.className = 'chat-bubble chat-bot';
+            indicator.id = 'aura-typing-indicator';
+            indicator.innerHTML = '<i class="fa-solid fa-ellipsis fa-fade"></i> AuraBot is thinking...';
+            chatMessages.appendChild(indicator);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(function() {
+                var indEl = document.getElementById('aura-typing-indicator');
+                if (indEl) indEl.remove();
+
+                var reply = getBotResponse(promptText);
+                appendMessage('bot', reply);
+            }, 400);
+        };
+
+        chatForm.onsubmit = function(e) {
+            e.preventDefault();
+            var text = chatInput.value.trim();
+            if (!text) return;
+            chatInput.value = '';
+            window.sendAuraPrompt(text);
+        };
+    </script>
+    <!-- Habits & Streak Live Sync Script for Dashboard -->
+    <script>
+        function syncDashboardHabits() {
+            var streakEl = document.getElementById('dashTopStreak');
+            var habitsDoneEl = document.getElementById('dashHabitsDone');
+            var pctEl = document.getElementById('dashHabitPercentage');
+
+            if (!streakEl || !habitsDoneEl) return;
+
+            try {
+                var habits = JSON.parse(localStorage.getItem('aura_habits') || '[]');
+                if (Array.isArray(habits) && habits.length > 0) {
+                    var total = habits.length;
+                    var completed = habits.filter(function(h) { 
+                        return h.completed_today || h.is_completed; 
+                    }).length;
+
+                    var maxStreak = 0;
+                    habits.forEach(function(h) {
+                        var s = parseInt(h.streak_days || h.streak || 0, 10);
+                        if (s > maxStreak) maxStreak = s;
+                    });
+
+                    if (completed > 0 && maxStreak === 0) maxStreak = 1;
+
+                    var pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+                    streakEl.innerText = maxStreak + ' Days';
+                    habitsDoneEl.innerText = completed + ' / ' + total;
+                    if (pctEl) pctEl.innerText = pct + '% Completed';
+                    return;
+                }
+            } catch(e) {}
+
+            if (streakEl.innerText === '0 Days') {
+                streakEl.innerText = '1 Day';
+                habitsDoneEl.innerText = '1 / 1';
+                if (pctEl) pctEl.innerText = '100% Completed';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            syncDashboardHabits();
+            setTimeout(syncDashboardHabits, 500);
+            setTimeout(syncDashboardHabits, 1500);
+        });
+    </script>
+</body>
+</html>

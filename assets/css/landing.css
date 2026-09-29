@@ -1,0 +1,108 @@
+/* Navigation */
+.navbar-custom {
+    padding: 1rem 0;
+    transition: var(--transition-smooth);
+    z-index: 1000;
+}
+
+.navbar-custom.scrolled {
+    background: var(--bg-surface);
+    backdrop-filter: var(--glass-blur);
+    border-bottom: 1px solid var(--border-glass);
+    padding: 0.6rem 0;
+}
+
+.nav-link {
+    color: var(--text-secondary) !important;
+    font-weight: 500;
+    transition: var(--transition-smooth);
+}
+
+.nav-link:hover {
+    color: var(--primary-color) !important;
+}
+
+/* Hero Section */
+.hero-section {
+    position: relative;
+    padding: 9rem 0 5rem;
+    overflow: hidden;
+}
+
+.hero-glow {
+    position: absolute;
+    top: 15%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 550px;
+    height: 550px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(217, 70, 239, 0.15) 50%, transparent 70%);
+    filter: blur(60px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Feature Icons */
+.feature-icon-box {
+    width: 60px;
+    height: 60px;
+    border-radius: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+    background: var(--primary-gradient);
+    color: white;
+}
+
+/* Section Header */
+.section-title {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+}
+
+.section-subtitle {
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin: 0 auto 3.5rem;
+}
+
+/* Testimonial & FAQ Accordion */
+.accordion-item {
+    background: var(--bg-surface-card);
+    border: 1px solid var(--border-glass);
+    margin-bottom: 1rem;
+    border-radius: var(--btn-radius) !important;
+    overflow: hidden;
+}
+
+.accordion-button {
+    background: transparent;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.accordion-button:not(.collapsed) {
+    background: rgba(99, 102, 241, 0.1);
+    color: var(--primary-color);
+}
+
+.accordion-button::after {
+    filter: invert(1);
+}
+
+[data-theme="light"] .accordion-button::after {
+    filter: none;
+}
+
+.accordion-body {
+    color: var(--text-secondary);
+}
+
+/* Footer */
+footer {
+    border-top: 1px solid var(--border-glass);
+    padding: 3rem 0;
+    color: var(--text-muted);
+}

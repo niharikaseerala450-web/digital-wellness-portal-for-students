@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Habits & Goal Tracker | AuraGrowth</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/landing.css">
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom border-bottom border-secondary-subtle sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+                <span class="fs-4 gradient-text"><i class="fa-solid fa-brain me-2"></i>AuraGrowth</span>
+            </a>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <a href="dashboard.html" class="btn btn-glass btn-sm"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-4" style="max-width: 900px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h2 class="fw-bold mb-1">Habit & Goal Tracker</h2>
+                <p class="text-secondary mb-0">Build positive routines, stay consistent, and monitor streaks.</p>
+            </div>
+            <button class="btn btn-gradient" data-bs-toggle="modal" data-bs-target="#addHabitModal">
+                <i class="fa-solid fa-plus me-1"></i> Add New Habit
+            </button>
+        </div>
+
+        <div id="habitAlert" class="alert d-none mb-3" role="alert"></div>
+
+        <!-- Summary Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-sm-4">
+                <div class="glass-panel p-3 text-center">
+                    <span class="text-secondary small">Total Habits</span>
+                    <h3 id="totalHabitsCount" class="fw-bold mt-1 mb-0">0</h3>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="glass-panel p-3 text-center">
+                    <span class="text-secondary small">Completed Today</span>
+                    <h3 id="completedTodayCount" class="fw-bold text-success mt-1 mb-0">0</h3>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="glass-panel p-3 text-center">
+                    <span class="text-secondary small">Daily Target Completion</span>
+                    <div class="progress mt-3" style="height: 12px; background: rgba(255, 255, 255, 0.1);">
+                        <div id="streakProgressBar" class="progress-bar bg-success" style="width: 0%; font-size: 10px; font-weight: bold; transition: width 0.3s ease;">0%</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Habit List -->
+        <div class="glass-panel p-4">
+            <h5 class="fw-bold mb-3"><i class="fa-solid fa-list-check me-2"></i>Today's Habits</h5>
+            <div id="habitList">
+                <!-- Dynamically injected habits -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New Habit -->
+    <div class="modal fade" id="addHabitModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content glass-card border-secondary">
+                <div class="modal-header border-secondary-subtle">
+                    <h5 class="modal-title fw-bold">Add New Habit</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" id="closeHabitModalBtn"></button>
+                </div>
+                <form id="addHabitForm">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Habit Name</label>
+                            <input type="text" id="habitTitle" class="form-control bg-transparent text-white border-secondary" required placeholder="e.g. 30 Mins Coding Practice">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Category</label>
+                            <select id="habitCategory" class="form-select bg-dark text-white border-secondary">
+                                <option value="Study & Career" selected>📚 Study & Career</option>
+                                <option value="Digital Detox">📵 Digital Detox</option>
+                                <option value="Fitness & Health">🏃 Fitness & Health</option>
+                                <option value="Mindfulness">🧘 Mindfulness</option>
+                            </select>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label text-secondary small">Daily Target Times</label>
+                            <input type="number" id="habitTarget" value="1" min="1" max="10" class="form-control bg-transparent text-white border-secondary">
+                        </div>
+                    </div>
+                    <div class="modal-footer border-secondary-subtle">
+                        <button type="button" class="btn btn-glass" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-gradient">Save Habit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config/supabase-config.js"></script>
+    <script src="../../assets/js/app/habits.app.js"></script>
+
+    <!-- Reliable Stats Real-time Sync Engine -->
+    <script>
+        function recalculateHabitCounters() {
+            var habitListEl = document.getElementById('habitList');
+            var totalCountEl = document.getElementById('totalHabitsCount');
+            var completedCountEl = document.getElementById('completedTodayCount');
+            var progressBarEl = document.getElementById('streakProgressBar');
+
+            if (!habitListEl || !totalCountEl || !completedCountEl || !progressBarEl) return;
+
+            // Strategy 1: Check from rendered DOM items
+            var habitItems = habitListEl.children;
+            var total = 0;
+            var completed = 0;
+
+            for (var i = 0; i < habitItems.length; i++) {
+                var item = habitItems[i];
+                // Ignore placeholder text/empty alerts
+                if (item.classList.contains('text-center') || item.tagName === 'P') continue;
+                
+                total++;
+                var textContent = item.innerText || '';
+                // Check if the item contains completed markers (strikethrough text, check icon, or 'Completed today' label)
+                if (textContent.includes('Completed today') || item.querySelector('.fa-check') || item.querySelector('del') || item.querySelector('.text-decoration-line-through')) {
+                    completed++;
+                }
+            }
+
+            // Strategy 2: If DOM check is 0, check localStorage fallback
+            if (total === 0) {
+                try {
+                    var localHabits = JSON.parse(localStorage.getItem('aura_habits') || '[]');
+                    if (Array.isArray(localHabits) && localHabits.length > 0) {
+                        total = localHabits.length;
+                        completed = localHabits.filter(function(h) { return h.completed_today || h.is_completed; }).length;
+                    }
+                } catch(e) {}
+            }
+
+            // Update DOM
+            totalCountEl.innerText = total;
+            completedCountEl.innerText = completed;
+
+            var percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            if (percentage > 100) percentage = 100;
+
+            progressBarEl.style.width = percentage + '%';
+            progressBarEl.innerText = percentage + '%';
+        }
+
+        // Run on load and whenever DOM changes
+        document.addEventListener('DOMContentLoaded', function() {
+            recalculateHabitCounters();
+
+            // Observe habitList changes automatically
+            var targetNode = document.getElementById('habitList');
+            if (targetNode) {
+                var observer = new MutationObserver(function() {
+                    recalculateHabitCounters();
+                });
+                observer.observe(targetNode, { childList: true, subtree: true, characterData: true });
+            }
+
+            // Fallback intervals for async Supabase delays
+            setTimeout(recalculateHabitCounters, 400);
+            setTimeout(recalculateHabitCounters, 1200);
+        });
+    </script>
+
+    <!-- AuraBot Widget -->
+    <script src="../../assets/js/modules/aura_bot.js"></script>
+</body>
+</html>

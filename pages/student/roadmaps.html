@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise Engineering Academy | AuraGrowth</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0c0f17; color: #cbd5e1; margin: 0; padding: 0; }
+        .code-font { font-family: 'Fira Code', monospace; }
+        .sidebar-tree { height: calc(100vh - 70px); overflow-y: auto; border-right: 1px solid rgba(255,255,255,0.08); }
+        .reading-area { height: calc(100vh - 70px); overflow-y: auto; }
+        .tree-node-btn { width: 100%; text-align: left; background: none; border: none; color: #94a3b8; padding: 7px 12px; border-radius: 6px; font-size: 0.85rem; margin-bottom: 2px; display: flex; align-items: center; justify-content: space-between; }
+        .tree-node-btn:hover { background: rgba(255,255,255,0.05); color: #f8fafc; }
+        .tree-node-btn.active { background: #0284c7; color: #ffffff; font-weight: 600; }
+        .gfg-card { background: #131926; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 1.25rem; margin-bottom: 1.5rem; }
+        .gfg-badge { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 700; }
+        .option-label { cursor: pointer; display: block; background: #1e293b; padding: 12px 14px; border-radius: 6px; margin-bottom: 8px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.2s; }
+        .option-label:hover { border-color: #38bdf8; background: #243248; }
+        .badge-completed { font-size: 0.7rem; padding: 4px 6px; }
+        .track-progress-container { background: #131926; border: 1px solid rgba(255,255,255,0.07); border-radius: 8px; padding: 10px 12px; margin-bottom: 1rem; }
+
+        /* Course Certificate Styles & Print Rules */
+        .cert-modal-dialog { max-width: 880px; }
+        .cert-frame {
+            background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+            border: 8px double #38bdf8;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            color: #f8fafc;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+        }
+        .cert-corner-decor {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            border: 3px solid #f59e0b;
+        }
+        .cert-tl { top: 12px; left: 12px; border-right: none; border-bottom: none; }
+        .cert-tr { top: 12px; right: 12px; border-left: none; border-bottom: none; }
+        .cert-bl { bottom: 12px; left: 12px; border-right: none; border-top: none; }
+        .cert-br { bottom: 12px; right: 12px; border-left: none; border-top: none; }
+        .cert-title { font-family: 'Inter', sans-serif; letter-spacing: 4px; text-transform: uppercase; font-weight: 800; color: #38bdf8; }
+        .cert-recipient { font-family: 'Inter', serif; font-size: 2.2rem; font-weight: 700; color: #fbbf24; border-bottom: 2px solid rgba(251, 191, 36, 0.4); display: inline-block; padding-bottom: 4px; margin: 15px 0; }
+        .cert-badge { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24, #d97706); display: inline-flex; align-items: center; justify-content: center; color: #000; font-size: 2rem; box-shadow: 0 0 20px rgba(245, 158, 11, 0.5); }
+        
+        @media print {
+            body * { visibility: hidden !important; }
+            #certPrintArea, #certPrintArea * { visibility: visible !important; }
+            #certPrintArea {
+                position: fixed !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                padding: 24px !important;
+                background: #ffffff !important;
+                color: #0f172a !important;
+                border: 8px double #0284c7 !important;
+                box-shadow: none !important;
+            }
+            #certPrintArea .cert-title { color: #0284c7 !important; }
+            #certPrintArea .cert-recipient { color: #0f172a !important; border-color: #0f172a !important; }
+            #certPrintArea .text-secondary { color: #475569 !important; }
+            #certPrintArea .text-white { color: #0f172a !important; }
+            #certPrintArea .text-info { color: #0284c7 !important; }
+            #certPrintArea .cert-badge { background: #f59e0b !important; color: #ffffff !important; }
+            .no-print { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg border-bottom border-secondary-subtle sticky-top" style="background:#0f172a; height: 70px;">
+        <div class="container-fluid px-4">
+            <span class="navbar-brand text-white fw-bold"><i class="fa-solid fa-graduation-cap text-info me-2"></i>AuraGrowth Academy</span>
+            <div class="d-flex align-items-center gap-3">
+                <select id="trackSelector" class="form-select form-select-sm bg-dark text-white border-secondary">
+                    <option value="fullstack" selected>Full Stack Developer</option>
+                    <option value="java">Java Developer</option>
+                    <option value="python">Python Developer</option>
+                    <option value="datascientist">Data Scientist</option>
+                    <option value="ai_engineer">AI Engineer</option>
+                    <option value="ml_engineer">Machine Learning Engineer</option>
+                    <option value="core_cs_dsa">Core CS & DSA</option>
+                </select>
+                <a href="dashboard.html" class="btn btn-outline-light btn-sm"><i class="fa-solid fa-house me-1"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-3 p-3 sidebar-tree" id="treeContainer"></div>
+            <div class="col-md-9 p-4 reading-area" id="contentContainer">
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-book-bookmark display-4 text-secondary mb-3"></i>
+                    <h4 class="text-white">Select a Module or Topic to Begin</h4>
+                    <p class="text-secondary small">Comprehensive technical deep dives, production code, edge cases, and 15-question exams.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Certificate Modal -->
+    <div class="modal fade" id="certificateModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered cert-modal-dialog">
+            <div class="modal-content bg-transparent border-0">
+                <div class="modal-body p-0">
+                    <div class="cert-frame" id="certPrintArea">
+                        <div class="cert-corner-decor cert-tl"></div>
+                        <div class="cert-corner-decor cert-tr"></div>
+                        <div class="cert-corner-decor cert-bl"></div>
+                        <div class="cert-corner-decor cert-br"></div>
+
+                        <div class="mb-3">
+                            <i class="fa-solid fa-graduation-cap text-info display-6 mb-2"></i>
+                            <h5 class="cert-title mb-0">Certificate of Specialization</h5>
+                            <span class="text-secondary small">AURAGROWTH ENGINEERING ACADEMY</span>
+                        </div>
+
+                        <p class="text-secondary mb-1">This credential is proudly awarded to</p>
+                        <div class="cert-recipient" id="certStudentName">Anjani</div>
+
+                        <p class="text-secondary mb-1">for successfully demonstrating mastery and passing all technical examinations in the course</p>
+                        
+                        <div class="my-3">
+                            <h3 class="text-info fw-bold mb-1" id="certTrackTitle">Specialization Course</h3>
+                            <span class="badge bg-dark border border-secondary text-warning px-3 py-1 code-font small" id="certCourseCode">COURSE: FS-101</span>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-end mt-4 px-4">
+                            <div class="text-start">
+                                <span class="text-secondary small d-block">Completion Date</span>
+                                <span class="fw-semibold text-white small" id="certIssueDate">September 24, 2026</span>
+                                <span class="text-secondary small d-block mt-1">Credential ID: <code class="text-warning code-font" id="certId">AURA-FSD-00000</code></span>
+                            </div>
+                            <div class="cert-badge">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <div class="text-end">
+                                <span class="text-secondary small d-block">Academic Certification Board</span>
+                                <span class="fw-bold text-white small" style="border-top: 1px solid rgba(255,255,255,0.3); padding-top: 4px; display: inline-block;">AuraGrowth Governing Council</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 justify-content-center pt-3 no-print">
+                    <button type="button" class="btn btn-secondary px-4" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success fw-bold px-4 shadow" onclick="window.print()">
+                        <i class="fa-solid fa-print me-2"></i> Print / Save as PDF
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- Project Common Supabase Configuration -->
+    <script src="../../assets/js/config/supabase-config.js"></script>
+    <script src="../../assets/js/data/roadmaps/fullstack.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/datascience.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/java.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/python.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/ai_engineer.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/ml_engineer.data.js"></script>
+    <script src="../../assets/js/data/roadmaps/core_cs_dsa.data.js"></script>
+    <!-- Roadmap Student Progress Persistence Engine -->
+    <script src="../../assets/js/modules/roadmap_progress.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var client = window.sb || window.supabaseClient || null;
+
+            var trackSelector = document.getElementById('trackSelector');
+            var treeContainer = document.getElementById('treeContainer');
+            var contentContainer = document.getElementById('contentContainer');
+            var currentActiveSection = null;
+
+            // Course-specific metadata mapping for distinct credentials
+            var COURSE_METADATA = {
+                'fullstack':     { code: 'COURSE: FS-101', prefix: 'FSD', name: 'Full Stack Engineering' },
+                'java':          { code: 'COURSE: JV-201', prefix: 'JVA', name: 'Enterprise Java Architecture' },
+                'python':        { code: 'COURSE: PY-301', prefix: 'PYT', name: 'Python Systems & Backend' },
+                'datascientist': { code: 'COURSE: DS-401', prefix: 'DSC', name: 'Data Science & Big Data' },
+                'ai_engineer':   { code: 'COURSE: AI-501', prefix: 'AIE', name: 'AI Engineering & LLM Systems' },
+                'ml_engineer':   { code: 'COURSE: ML-601', prefix: 'MLE', name: 'Machine Learning & MLOps' },
+                'core_cs_dsa':   { code: 'COURSE: CS-701', prefix: 'DSA', name: 'Core CS, DSA & Systems Architecture' }
+            };
+
+            function renderTree(trackKey) {
+                var trackData = window.AURA_ROADMAPS ? window.AURA_ROADMAPS[trackKey] : null;
+                if (!trackData) {
+                    treeContainer.innerHTML = '<div class="text-secondary small p-2">Loading track data...</div>';
+                    return;
+                }
+
+                // Compute overall progress stats from localStorage
+                var stats = window.RoadmapProgress 
+                    ? RoadmapProgress.computeTrackStats(trackKey, trackData.sections.length)
+                    : { passedCount: 0, totalCount: trackData.sections.length, progressPercentage: 0 };
+
+                var certBtnHtml = '';
+                if (stats.progressPercentage >= 100) {
+                    certBtnHtml = 
+                        '<button type="button" class="btn btn-warning btn-sm w-100 mt-2 fw-bold shadow-sm" onclick="showCertificateModal(\'' + trackKey + '\')">' +
+                            '<i class="fa-solid fa-award me-1"></i> Claim ' + (COURSE_METADATA[trackKey]?.prefix || '') + ' Certificate' +
+                        '</button>';
+                }
+
+                var progressBarHtml = 
+                    '<div class="track-progress-container" id="trackProgressBox">' +
+                        '<div class="d-flex justify-content-between align-items-center mb-1">' +
+                            '<span class="small fw-semibold text-secondary">Progress: ' + stats.passedCount + '/' + stats.totalCount + ' Passed</span>' +
+                            '<span class="small fw-bold ' + (stats.progressPercentage >= 100 ? 'text-success' : 'text-info') + '">' + stats.progressPercentage + '%</span>' +
+                        '</div>' +
+                        '<div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">' +
+                            '<div class="progress-bar ' + (stats.progressPercentage >= 100 ? 'bg-success' : 'bg-info') + '" style="width: ' + stats.progressPercentage + '%;"></div>' +
+                        '</div>' +
+                        certBtnHtml +
+                    '</div>';
+
+                treeContainer.innerHTML = '<h6 class="text-white fw-bold mb-2">' + trackData.trackTitle + '</h6>' + progressBarHtml;
+                
+                trackData.sections.forEach(function(sec) {
+                    var secBlock = document.createElement('div');
+                    secBlock.className = 'mb-3';
+                    secBlock.innerHTML = '<div class="text-info small fw-bold mb-1">' + sec.title + '</div>';
+                    
+                    sec.topics.forEach(function(top) {
+                        var btn = document.createElement('button');
+                        btn.className = 'tree-node-btn';
+                        btn.textContent = top.name;
+                        btn.onclick = function() {
+                            document.querySelectorAll('.tree-node-btn').forEach(function(b) { b.classList.remove('active'); });
+                            btn.classList.add('active');
+                            currentActiveSection = sec;
+                            if (window.RoadmapProgress) RoadmapProgress.saveLastActive(trackKey, sec.id);
+                            renderTopic(top);
+                        };
+                        secBlock.appendChild(btn);
+                    });
+
+                    if (sec.quiz && sec.quiz.questions) {
+                        var quizBtn = document.createElement('button');
+                        quizBtn.className = 'tree-node-btn text-warning fw-semibold mt-1';
+                        quizBtn.setAttribute('data-quiz-section', sec.id);
+                        quizBtn.innerHTML = '<span><i class="fa-solid fa-pen-to-square me-1"></i> Weekly Quiz (' + sec.quiz.questions.length + ' Qs)</span>';
+                        quizBtn.onclick = function() {
+                            document.querySelectorAll('.tree-node-btn').forEach(function(b) { b.classList.remove('active'); });
+                            quizBtn.classList.add('active');
+                            currentActiveSection = sec;
+                            if (window.RoadmapProgress) RoadmapProgress.saveLastActive(trackKey, sec.id);
+                            renderQuiz(sec.quiz, sec.id);
+                        };
+                        secBlock.appendChild(quizBtn);
+                    }
+                    treeContainer.appendChild(secBlock);
+                });
+
+                var firstTopic = treeContainer.querySelector('.tree-node-btn');
+                if (firstTopic) firstTopic.click();
+
+                // Load saved student completion status
+                loadStudentProgress(trackKey);
+            }
+
+            function renderTopic(t) {
+                var keyPointsList = (t.keyPoints || []).map(function(k) { return '<li>' + k + '</li>'; }).join('');
+                var mistakesList = (t.mistakes || []).map(function(m) { return '<li>' + m + '</li>'; }).join('');
+                var practiceList = (t.practiceQuestions || []).map(function(p) { return '<li class="mb-1"><b>' + p.title + ':</b> ' + p.desc + '</li>'; }).join('');
+
+                contentContainer.innerHTML = 
+                    '<div class="mb-4">' +
+                        '<span class="badge bg-primary gfg-badge mb-2">Technical Specification</span>' +
+                        '<h2 class="text-white fw-bold">' + t.name + '</h2>' +
+                    '</div>' +
+                    '<div class="gfg-card">' +
+                        '<h6 class="text-warning fw-bold"><i class="fa-solid fa-bullseye me-2"></i>1. Definition</h6>' +
+                        '<p class="text-secondary small mb-0">' + t.definition + '</p>' +
+                    '</div>' +
+                    '<div class="gfg-card">' +
+                        '<h6 class="text-info fw-bold"><i class="fa-solid fa-network-wired me-2"></i>2. Architecture & Mechanical Concept</h6>' +
+                        '<div class="text-secondary small mb-0">' + t.concept + '</div>' +
+                    '</div>' +
+                    '<div class="gfg-card">' +
+                        '<h6 class="text-primary fw-bold"><i class="fa-solid fa-code me-2"></i>3. Syntax & Structure</h6>' +
+                        '<pre class="bg-black p-3 rounded border border-secondary code-font text-info small mb-0"><code>' + t.syntax + '</code></pre>' +
+                    '</div>' +
+                    '<div class="gfg-card">' +
+                        '<h6 class="text-success fw-bold"><i class="fa-solid fa-terminal me-2"></i>4. Code Implementation</h6>' +
+                        '<pre class="bg-black p-3 rounded border border-secondary code-font text-success small mb-3"><code>' + t.example + '</code></pre>' +
+                        '<h6 class="text-white fw-bold small">5. Output</h6>' +
+                        '<pre class="bg-black p-2 rounded border border-secondary code-font text-warning small mb-0"><code>' + t.output + '</code></pre>' +
+                    '</div>' +
+                    '<div class="row">' +
+                        '<div class="col-md-6">' +
+                            '<div class="gfg-card h-100">' +
+                                '<h6 class="text-white fw-bold"><i class="fa-solid fa-star text-warning me-2"></i>6. Key Points</h6>' +
+                                '<ul class="text-secondary small ps-3 mb-0">' + keyPointsList + '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="col-md-6">' +
+                            '<div class="gfg-card h-100">' +
+                                '<h6 class="text-danger fw-bold"><i class="fa-solid fa-triangle-exclamation me-2"></i>7. Common Pitfalls</h6>' +
+                                '<ul class="text-secondary small ps-3 mb-0">' + mistakesList + '</ul>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="gfg-card mt-4 mb-5">' +
+                        '<h6 class="text-info fw-bold"><i class="fa-solid fa-laptop-code me-2"></i>8. Practice Questions</h6>' +
+                        '<ol class="text-secondary small ps-3 mb-0">' + practiceList + '</ol>' +
+                    '</div>' +
+                    '<div style="height: 100px;"></div>';
+            }
+            function renderQuiz(quiz, sectionId) {
+                if (!quiz || !quiz.questions) return;
+                
+                var currentTrack = trackSelector.value;
+                var savedProgress = window.RoadmapProgress ? RoadmapProgress.getSectionProgress(currentTrack, sectionId) : null;
+                var savedBannerHtml = '';
+
+                if (savedProgress) {
+                    var alertClass = savedProgress.passed ? 'alert-success' : 'alert-danger';
+                    var icon = savedProgress.passed ? 'fa-circle-check text-success' : 'fa-triangle-exclamation text-danger';
+                    savedBannerHtml = 
+                        '<div class="alert ' + alertClass + ' py-2 px-3 small mb-3 d-flex justify-content-between align-items-center">' +
+                            '<span><i class="fa-solid ' + icon + ' me-2"></i><b>Previous Attempt:</b> ' + 
+                            savedProgress.score + ' / ' + savedProgress.total + ' (' + savedProgress.percentage + '%) — ' + 
+                            (savedProgress.passed ? 'PASSED ✓' : 'NEEDS RETAKE') + '</span>' +
+                            '<span class="badge ' + (savedProgress.passed ? 'bg-success' : 'bg-danger') + '">' + savedProgress.percentage + '%</span>' +
+                        '</div>';
+                }
+
+                var questionsHtml = '';
+                for (var qIdx = 0; qIdx < quiz.questions.length; qIdx++) {
+                    var q = quiz.questions[qIdx];
+                    var optsHtml = '';
+                    for (var oIdx = 0; oIdx < q.options.length; oIdx++) {
+                        optsHtml += '<label class="option-label text-white small">' +
+                            '<input type="radio" name="q_' + sectionId + '_' + qIdx + '" value="' + oIdx + '" class="form-check-input me-2"> ' + 
+                            q.options[oIdx] +
+                        '</label>';
+                    }
+
+                    questionsHtml += '<div class="gfg-card mb-3" data-qidx="' + qIdx + '">' +
+                        '<h6 class="text-white fw-semibold mb-3">' + (qIdx + 1) + '. ' + q.question + '</h6>' +
+                        '<div class="options-container">' + optsHtml + '</div>' +
+                        '<div class="explanation alert alert-info py-2 px-3 small d-none mt-2" id="expl_' + sectionId + '_' + qIdx + '">' +
+                            '<b>Rationale:</b> ' + q.explanation +
+                        '</div>' +
+                    '</div>';
+                }
+
+                contentContainer.innerHTML = 
+                    '<div class="mb-4">' +
+                        '<span class="badge bg-warning text-dark gfg-badge mb-2">Graded Assessment</span>' +
+                        '<h2 class="text-white fw-bold">' + quiz.title + '</h2>' +
+                        '<p class="text-secondary small">Total Questions: ' + quiz.questions.length + ' | Passing Score: 60%</p>' +
+                    '</div>' +
+                    savedBannerHtml +
+                    questionsHtml +
+                    '<div class="p-4 text-center">' +
+                        '<button class="btn btn-success btn-lg px-5 py-3 fw-bold shadow" id="btnSubmitQuiz" type="button">' +
+                            '<i class="fa-solid fa-paper-plane me-2"></i> Submit Examination' +
+                        '</button>' +
+                        '<div id="quizResultFeedback_' + sectionId + '" class="mt-3"></div>' +
+                    '</div>' +
+                    '<div style="height: 150px;"></div>';
+
+                var submitBtn = document.getElementById('btnSubmitQuiz');
+                if (submitBtn) {
+                    submitBtn.onclick = async function() {
+                        var score = 0;
+                        var totalQuestions = quiz.questions.length;
+
+                        for (var idx = 0; idx < totalQuestions; idx++) {
+                            var q = quiz.questions[idx];
+                            var sel = document.querySelector('input[name="q_' + sectionId + '_' + idx + '"]:checked');
+                            var card = document.querySelector('[data-qidx="' + idx + '"]');
+                            if (card) {
+                                var exp = card.querySelector('.explanation');
+                                if (exp) exp.classList.remove('d-none');
+                                var labels = card.querySelectorAll('.option-label');
+                                if (labels[q.correct]) {
+                                    labels[q.correct].style.borderColor = '#22c55e';
+                                    labels[q.correct].style.background = 'rgba(34, 197, 94, 0.15)';
+                                }
+                                if (sel && parseInt(sel.value, 10) === q.correct) {
+                                    score++;
+                                } else if (sel && labels[parseInt(sel.value, 10)]) {
+                                    labels[parseInt(sel.value, 10)].style.borderColor = '#ef4444';
+                                    labels[parseInt(sel.value, 10)].style.background = 'rgba(239, 68, 68, 0.15)';
+                                }
+                            }
+                        }
+                        this.disabled = true;
+
+                        var percentage = Math.round((score / totalQuestions) * 100);
+                        var passed = percentage >= 60;
+
+                        // 1. Persist attempt in localStorage
+                        if (window.RoadmapProgress) {
+                            RoadmapProgress.saveQuizAttempt(trackSelector.value, sectionId, score, totalQuestions);
+                        }
+
+                        // 2. Refresh UI elements immediately
+                        if (passed) {
+                            markSectionCompletedUI(sectionId);
+                        }
+                        updateTrackProgressBarUI(trackSelector.value);
+
+                        // 3. Supabase sync if authenticated
+                        var feedbackBox = document.getElementById('quizResultFeedback_' + sectionId);
+                        if (passed) {
+                            var xpReward = Math.round((score / totalQuestions) * 150);
+                            try {
+                                if (client) {
+                                    var authData = await client.auth.getUser();
+                                    var user = authData.data ? authData.data.user : null;
+
+                                    if (user) {
+                                        var targetSecId = sectionId || (currentActiveSection ? currentActiveSection.id : 'general-section');
+                                        var rpcResult = await client.rpc('record_quiz_completion', {
+                                            p_track_id: trackSelector.value,
+                                            p_section_id: targetSecId,
+                                            p_score: score,
+                                            p_max_score: totalQuestions,
+                                            p_xp_reward: xpReward
+                                        });
+
+                                        if (rpcResult.error) throw rpcResult.error;
+                                        if (feedbackBox) {
+                                            feedbackBox.innerHTML = '<div class="alert alert-success mt-2 fw-bold">🎉 Exam Passed! Score: ' + score + '/' + totalQuestions + ' (' + percentage + '%) &bull; +' + (rpcResult.data.awarded_xp || xpReward) + ' XP Earned!</div>';
+                                        }
+                                        return;
+                                    }
+                                }
+                            } catch (err) {
+                                console.error('Supabase Sync Error:', err.message);
+                            }
+
+                            if (feedbackBox) {
+                                feedbackBox.innerHTML = '<div class="alert alert-success mt-2 fw-bold">🎉 Exam Passed! Score: ' + score + '/' + totalQuestions + ' (' + percentage + '%)</div>';
+                            }
+                        } else {
+                            if (feedbackBox) {
+                                feedbackBox.innerHTML = '<div class="alert alert-danger mt-2 fw-bold">Result: ' + score + '/' + totalQuestions + ' (' + percentage + '%). Minimum 60% required to pass. Please review the material and try again!</div>';
+                            }
+                        }
+                    };
+                }
+            }
+
+            function updateTrackProgressBarUI(trackKey) {
+                var trackData = window.AURA_ROADMAPS ? window.AURA_ROADMAPS[trackKey] : null;
+                if (!trackData) return;
+                var stats = window.RoadmapProgress 
+                    ? RoadmapProgress.computeTrackStats(trackKey, trackData.sections.length)
+                    : { passedCount: 0, totalCount: trackData.sections.length, progressPercentage: 0 };
+
+                var box = document.getElementById('trackProgressBox');
+                if (box) {
+                    var certBtnHtml = '';
+                    if (stats.progressPercentage >= 100) {
+                        certBtnHtml = 
+                            '<button type="button" class="btn btn-warning btn-sm w-100 mt-2 fw-bold shadow-sm" onclick="showCertificateModal(\'' + trackKey + '\')">' +
+                                '<i class="fa-solid fa-award me-1"></i> Claim ' + (COURSE_METADATA[trackKey]?.prefix || '') + ' Certificate' +
+                            '</button>';
+                    }
+
+                    box.innerHTML = 
+                        '<div class="d-flex justify-content-between align-items-center mb-1">' +
+                            '<span class="small fw-semibold text-secondary">Progress: ' + stats.passedCount + '/' + stats.totalCount + ' Passed</span>' +
+                            '<span class="small fw-bold ' + (stats.progressPercentage >= 100 ? 'text-success' : 'text-info') + '">' + stats.progressPercentage + '%</span>' +
+                        '</div>' +
+                        '<div class="progress" style="height: 6px; background: rgba(255,255,255,0.1);">' +
+                            '<div class="progress-bar ' + (stats.progressPercentage >= 100 ? 'bg-success' : 'bg-info') + '" style="width: ' + stats.progressPercentage + '%;"></div>' +
+                        '</div>' +
+                        certBtnHtml;
+                }
+            }
+
+            // Function to generate and show course-specific certificate
+            window.showCertificateModal = async function(trackKey) {
+                var trackData = window.AURA_ROADMAPS ? window.AURA_ROADMAPS[trackKey] : null;
+                if (!trackData) return;
+
+                var studentName = 'Anjani';
+                if (client) {
+                    try {
+                        var auth = await client.auth.getUser();
+                        if (auth.data && auth.data.user) {
+                            studentName = auth.data.user.user_metadata?.full_name || 
+                                          auth.data.user.email?.split('@')[0] || 
+                                          studentName;
+                        }
+                    } catch (e) {
+                        console.warn('Could not fetch user metadata:', e);
+                    }
+                }
+
+                // Retrieve or initialize distinct course certificate data
+                var storageKey = 'aura_cert_' + trackKey;
+                var savedCertData = null;
+                try {
+                    savedCertData = JSON.parse(localStorage.getItem(storageKey));
+                } catch(e) {}
+
+                var meta = COURSE_METADATA[trackKey] || { code: 'COURSE: ' + trackKey.toUpperCase(), prefix: 'TRK' };
+
+                if (!savedCertData) {
+                    var randomHash = Math.floor(10000 + Math.random() * 90000);
+                    savedCertData = {
+                        credentialId: 'AURA-' + meta.prefix + '-' + randomHash,
+                        issueDate: new Date().toLocaleDateString('en-US', {
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        })
+                    };
+                    localStorage.setItem(storageKey, JSON.stringify(savedCertData));
+                }
+
+                document.getElementById('certStudentName').textContent = studentName;
+                document.getElementById('certTrackTitle').textContent = trackData.trackTitle;
+                document.getElementById('certCourseCode').textContent = meta.code;
+                document.getElementById('certIssueDate').textContent = savedCertData.issueDate;
+                document.getElementById('certId').textContent = savedCertData.credentialId;
+
+                var certModal = new bootstrap.Modal(document.getElementById('certificateModal'));
+                certModal.show();
+            };
+
+            async function loadStudentProgress(trackKey) {
+                if (window.RoadmapProgress) {
+                    var localTrackData = RoadmapProgress.getTrackProgress(trackKey);
+                    if (localTrackData && localTrackData.sections) {
+                        Object.keys(localTrackData.sections).forEach(function(secId) {
+                            if (localTrackData.sections[secId].passed) {
+                                markSectionCompletedUI(secId);
+                            }
+                        });
+                    }
+                }
+
+                if (!client) return;
+                try {
+                    var authData = await client.auth.getUser();
+                    var user = authData.data ? authData.data.user : null;
+                    if (!user) return;
+
+                    var res = await client
+                        .from('student_roadmap_progress')
+                        .select('section_id')
+                        .eq('track_id', trackKey)
+                        .eq('is_completed', true);
+
+                    if (res.data) {
+                        res.data.forEach(function(item) {
+                            markSectionCompletedUI(item.section_id);
+                        });
+                    }
+                } catch (e) {
+                    console.warn('Could not restore roadmap progress from cloud:', e.message);
+                }
+            }
+
+            function markSectionCompletedUI(secId) {
+                var quizBtn = document.querySelector('[data-quiz-section="' + secId + '"]');
+                if (quizBtn && !quizBtn.querySelector('.badge-completed')) {
+                    var checkBadge = document.createElement('span');
+                    checkBadge.className = 'badge bg-success ms-auto badge-completed';
+                    checkBadge.innerHTML = '<i class="fa-solid fa-check"></i> Passed';
+                    quizBtn.appendChild(checkBadge);
+                }
+            }
+
+            // Restore last active track or default to fullstack
+            var initialTrack = 'fullstack';
+            if (window.RoadmapProgress) {
+                var savedTrack = RoadmapProgress.getLastActiveTrack();
+                if (savedTrack && trackSelector.querySelector('option[value="' + savedTrack + '"]')) {
+                    initialTrack = savedTrack;
+                }
+            }
+
+            if (trackSelector) {
+                trackSelector.value = initialTrack;
+                trackSelector.onchange = function() { 
+                    if (window.RoadmapProgress) RoadmapProgress.saveLastActive(trackSelector.value, null);
+                    renderTree(trackSelector.value); 
+                };
+            }
+            renderTree(initialTrack);
+        });
+    </script>
+    <!-- AuraBot Widget -->
+    <script src="../../assets/js/modules/aura_bot.js"></script>
+</body>
+</html>

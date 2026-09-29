@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Brain Games & Focus Suite | AuraGrowth</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/landing.css">
+    <style>
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: 440px;
+            margin: 0 auto;
+        }
+        .memory-card {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .memory-card.unflipped {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: #94a3b8;
+        }
+        .memory-card.flipped {
+            background: rgba(255, 193, 7, 0.15);
+            border: 1px solid #ffc107;
+            color: #ffc107;
+        }
+        .memory-card.matched {
+            background: rgba(25, 135, 84, 0.25);
+            border: 1px solid #198754;
+            color: #20c997;
+            cursor: default;
+        }
+        .reaction-box {
+            height: 220px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+            user-select: none;
+        }
+        .simon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 120px);
+            gap: 16px;
+            justify-content: center;
+        }
+        .simon-tile {
+            width: 120px;
+            height: 120px;
+            border-radius: 16px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom border-bottom border-secondary-subtle sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+                <span class="fs-4 gradient-text"><i class="fa-solid fa-brain me-2"></i>AuraGrowth</span>
+            </a>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <a href="dashboard.html" class="btn btn-glass btn-sm"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-4" style="max-width: 950px;">
+        <div class="text-center mb-4">
+            <h2 class="fw-bold">Cognitive Focus & Brain Games</h2>
+            <p class="text-secondary">Sharpen working memory, reaction speed, and cognitive flexibility before study blocks.</p>
+        </div>
+
+        <div id="gameAlert" class="alert d-none mb-4" role="alert"></div>
+
+        <!-- Game Selector Tabs -->
+        <ul class="nav nav-pills justify-content-center mb-4 gap-2" id="gamesTab" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-memory">
+                    <i class="fa-solid fa-th-large me-1"></i> 1. Memory Match
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-recall">
+                    <i class="fa-solid fa-hashtag me-1"></i> 2. Number Recall
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-focus">
+                    <i class="fa-solid fa-palette me-1"></i> 3. Focus Challenge
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-reaction">
+                    <i class="fa-solid fa-bolt me-1"></i> 4. Reaction Time
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-pattern">
+                    <i class="fa-solid fa-shapes me-1"></i> 5. Pattern Recognition
+                </button>
+            </li>
+        </ul>
+
+        <!-- Games Tab Panes -->
+        <div class="tab-content" id="gamesTabContent">
+            
+            <!-- 1. MEMORY MATCH GAME -->
+            <div class="tab-pane fade show active" id="tab-memory">
+                <div class="glass-panel p-4 text-center">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="text-secondary">Moves: <strong id="memoryMoves" class="text-white">0</strong></span>
+                        <button id="memoryRestartBtn" class="btn btn-glass btn-sm"><i class="fa-solid fa-rotate-right me-1"></i> Restart</button>
+                    </div>
+                    <div class="memory-grid" id="memoryGrid"></div>
+                </div>
+            </div>
+
+            <!-- 2. NUMBER RECALL CHALLENGE -->
+            <div class="tab-pane fade" id="tab-recall">
+                <div class="glass-panel p-4 text-center">
+                    <h5 class="fw-bold mb-2">Number Recall Challenge</h5>
+                    <p class="text-secondary small">Memorize the sequence before it disappears, then type it accurately.</p>
+                    <span class="badge bg-secondary-subtle text-secondary mb-4" id="numLevel">4 Digits</span>
+
+                    <div id="numDisplay" class="display-3 fw-bold gradient-text my-4 py-2 d-none">----</div>
+
+                    <div id="numInputSection" class="d-none max-w-sm mx-auto my-4" style="max-width: 320px;">
+                        <input type="text" id="numInput" class="form-control form-control-lg text-center bg-transparent text-white border-secondary mb-3" placeholder="Enter numbers" maxlength="12">
+                        <button id="numSubmitBtn" class="btn btn-gradient w-100 py-2">Submit Answer</button>
+                    </div>
+
+                    <button id="numStartBtn" class="btn btn-gradient px-4 py-2 mt-2">Start Round</button>
+                </div>
+            </div>
+
+            <!-- 3. FOCUS CHALLENGE (STROOP COLOR TEST) -->
+            <div class="tab-pane fade" id="tab-focus">
+                <div class="glass-panel p-4 text-center">
+                    <h5 class="fw-bold mb-1">Focus Challenge (Stroop Test)</h5>
+                    <p class="text-secondary small mb-3">Select the button matching the <strong>font ink color</strong>, not the word text!</p>
+                    
+                    <div class="d-flex justify-content-center gap-4 mb-3">
+                        <span class="text-secondary">Time Left: <strong id="stroopTimer" class="text-warning">20s</strong></span>
+                        <span class="text-secondary">Score: <strong id="stroopScore" class="text-success">0</strong></span>
+                    </div>
+
+                    <div id="stroopWord" class="display-4 fw-bold mb-4 text-secondary">Ready?</div>
+
+                    <div class="d-flex justify-content-center gap-2 flex-wrap mb-4">
+                        <button class="btn btn-outline-danger px-4 py-2 stroop-btn" data-color="RED">RED</button>
+                        <button class="btn btn-outline-primary px-4 py-2 stroop-btn" data-color="BLUE">BLUE</button>
+                        <button class="btn btn-outline-success px-4 py-2 stroop-btn" data-color="GREEN">GREEN</button>
+                        <button class="btn btn-outline-warning px-4 py-2 stroop-btn" data-color="YELLOW">YELLOW</button>
+                    </div>
+
+                    <button id="stroopStartBtn" class="btn btn-gradient px-4 py-2">Start Focus Test</button>
+                </div>
+            </div>
+
+            <!-- 4. REACTION TIME TEST -->
+            <div class="tab-pane fade" id="tab-reaction">
+                <div class="glass-panel p-4 text-center">
+                    <h5 class="fw-bold mb-1">Reaction Speed Meter</h5>
+                    <p class="text-secondary small mb-3">Click the card to begin. Wait until it turns GREEN, then click as fast as possible!</p>
+                    
+                    <div id="reactionBox" class="reaction-box glass-card border-secondary d-flex align-items-center justify-content-center mb-3">
+                        <h4 id="reactionText" class="fw-bold text-white mb-0">Click to Start</h4>
+                    </div>
+
+                    <small class="text-secondary">Best Reaction: <strong id="reactionScore" class="text-info">-- ms</strong></small>
+                </div>
+            </div>
+
+            <!-- 5. PATTERN RECOGNITION GAME (SIMON TILES) -->
+            <div class="tab-pane fade" id="tab-pattern">
+                <div class="glass-panel p-4 text-center">
+                    <h5 class="fw-bold mb-1">Pattern Recognition</h5>
+                    <p class="text-secondary small mb-3">Follow and repeat the flashing tile pattern in sequence.</p>
+
+                    <span class="text-secondary d-block mb-3">Current Round: <strong id="simonRound" class="text-warning">0</strong></span>
+
+                    <div class="simon-grid mb-4">
+                        <div class="simon-tile bg-danger" data-index="0"></div>
+                        <div class="simon-tile bg-primary" data-index="1"></div>
+                        <div class="simon-tile bg-warning" data-index="2"></div>
+                        <div class="simon-tile bg-success" data-index="3"></div>
+                    </div>
+
+                    <button id="simonStartBtn" class="btn btn-gradient px-4 py-2">Start Pattern</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config/supabase-config.js"></script>
+
+    <!-- Games Script Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var gameAlert = document.getElementById('gameAlert');
+
+            function showAlert(message, type) {
+                if (!gameAlert) return;
+                gameAlert.className = 'alert alert-' + (type || 'success') + ' py-2 px-3 small';
+                gameAlert.textContent = message;
+                gameAlert.classList.remove('d-none');
+                setTimeout(function() { gameAlert.classList.add('d-none'); }, 3500);
+            }
+
+            // Background XP Sync (UI కి ఎటువంటి ఆటంకం లేకుండా రన్ అవుతుంది)
+            function awardGameXp(gameTitle, score) {
+                try {
+                    if (window.sb && window.sb.auth) {
+                        window.sb.auth.getSession().then(function(res) {
+                            var uid = res?.data?.session?.user?.id;
+                            if (uid && window.sb.rpc) {
+                                window.sb.rpc('record_brain_game_score', {
+                                    target_user_id: uid,
+                                    game_name: gameTitle,
+                                    score_achieved: score || 25
+                                }).then(function() {
+                                    console.log('XP synced for ' + gameTitle);
+                                }).catch(function(err) {
+                                    console.warn('XP sync warning:', err);
+                                });
+                            }
+                        });
+                    }
+                } catch(e) {
+                    console.warn(e);
+                }
+            }
+
+            /* GAME 1: MEMORY MATCH */
+            var memoryGrid = document.getElementById('memoryGrid');
+            var memoryRestartBtn = document.getElementById('memoryRestartBtn');
+            var memoryMovesEl = document.getElementById('memoryMoves');
+            var ICONS = ['fa-brain', 'fa-bolt', 'fa-fire', 'fa-heart', 'fa-star', 'fa-gem'];
+            var flippedCards = [], matchedPairs = 0, memoryMoves = 0;
+
+            function initMemoryGame() {
+                if (!memoryGrid) return;
+                memoryGrid.innerHTML = '';
+                flippedCards = [];
+                matchedPairs = 0;
+                memoryMoves = 0;
+                if (memoryMovesEl) memoryMovesEl.textContent = '0';
+
+                var deck = ICONS.concat(ICONS).sort(function() { return 0.5 - Math.random(); });
+                deck.forEach(function(icon, idx) {
+                    var card = document.createElement('div');
+                    card.className = 'memory-card unflipped';
+                    card.dataset.icon = icon;
+                    card.dataset.idx = idx;
+                    card.innerHTML = '<i class="fa-solid fa-question"></i>';
+
+                    card.onclick = function() { onCardClick(card); };
+                    memoryGrid.appendChild(card);
+                });
+            }
+
+            function onCardClick(card) {
+                if (flippedCards.length === 2 || card.classList.contains('matched') || card.classList.contains('flipped')) return;
+
+                card.classList.remove('unflipped');
+                card.classList.add('flipped');
+                card.innerHTML = '<i class="fa-solid ' + card.dataset.icon + '"></i>';
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    memoryMoves++;
+                    if (memoryMovesEl) memoryMovesEl.textContent = memoryMoves;
+                    var c1 = flippedCards[0];
+                    var c2 = flippedCards[1];
+
+                    if (c1.dataset.icon === c2.dataset.icon) {
+                        c1.classList.remove('flipped');
+                        c2.classList.remove('flipped');
+                        c1.classList.add('matched');
+                        c2.classList.add('matched');
+                        matchedPairs++;
+                        flippedCards = [];
+                        if (matchedPairs === ICONS.length) {
+                            showAlert('Memory Match Completed in ' + memoryMoves + ' moves! (+25 XP)', 'success');
+                            awardGameXp('Memory Match', 25);
+                        }
+                    } else {
+                        setTimeout(function() {
+                            c1.classList.remove('flipped');
+                            c2.classList.remove('flipped');
+                            c1.classList.add('unflipped');
+                            c2.classList.add('unflipped');
+                            c1.innerHTML = '<i class="fa-solid fa-question"></i>';
+                            c2.innerHTML = '<i class="fa-solid fa-question"></i>';
+                            flippedCards = [];
+                        }, 700);
+                    }
+                }
+            }
+            if (memoryRestartBtn) memoryRestartBtn.onclick = initMemoryGame;
+
+            /* GAME 2: NUMBER RECALL */
+            var numDisplay = document.getElementById('numDisplay');
+            var numInputSection = document.getElementById('numInputSection');
+            var numInput = document.getElementById('numInput');
+            var numSubmitBtn = document.getElementById('numSubmitBtn');
+            var numStartBtn = document.getElementById('numStartBtn');
+            var numLevelEl = document.getElementById('numLevel');
+            var numCurrentLevel = 4;
+            var generatedSequence = '';
+
+            if (numStartBtn) {
+                numStartBtn.onclick = function() {
+                    generatedSequence = '';
+                    for (var i = 0; i < numCurrentLevel; i++) {
+                        generatedSequence += Math.floor(Math.random() * 10);
+                    }
+                    if (numInputSection) numInputSection.classList.add('d-none');
+                    if (numDisplay) {
+                        numDisplay.textContent = generatedSequence;
+                        numDisplay.classList.remove('d-none');
+                    }
+                    numStartBtn.disabled = true;
+
+                    setTimeout(function() {
+                        if (numDisplay) numDisplay.classList.add('d-none');
+                        if (numInputSection) {
+                            numInputSection.classList.remove('d-none');
+                            numInput.value = '';
+                            numInput.focus();
+                        }
+                    }, 2000);
+                };
+            }
+
+            if (numSubmitBtn) {
+                numSubmitBtn.onclick = function() {
+                    if (numInput.value.trim() === generatedSequence) {
+                        numCurrentLevel++;
+                        if (numLevelEl) numLevelEl.textContent = numCurrentLevel + ' Digits';
+                        showAlert('Correct sequence! (+15 XP)', 'success');
+                        awardGameXp('Number Recall', 15);
+                    } else {
+                        showAlert('Incorrect! Sequence was: ' + generatedSequence, 'danger');
+                        numCurrentLevel = 4;
+                        if (numLevelEl) numLevelEl.textContent = '4 Digits';
+                    }
+                    if (numStartBtn) numStartBtn.disabled = false;
+                    if (numInputSection) numInputSection.classList.add('d-none');
+                };
+            }
+
+            /* GAME 3: FOCUS CHALLENGE */
+            var stroopWord = document.getElementById('stroopWord');
+            var stroopScoreEl = document.getElementById('stroopScore');
+            var stroopTimerEl = document.getElementById('stroopTimer');
+            var stroopStartBtn = document.getElementById('stroopStartBtn');
+            var stroopButtons = document.querySelectorAll('.stroop-btn');
+            var COLORS = [
+                { name: 'RED', css: 'text-danger' },
+                { name: 'BLUE', css: 'text-primary' },
+                { name: 'GREEN', css: 'text-success' },
+                { name: 'YELLOW', css: 'text-warning' }
+            ];
+            var stroopScore = 0, stroopTimer = 20, stroopInterval = null, activeColor = null;
+
+            function nextStroopQuestion() {
+                var wordObj = COLORS[Math.floor(Math.random() * COLORS.length)];
+                var inkObj = COLORS[Math.floor(Math.random() * COLORS.length)];
+                activeColor = inkObj.name;
+                stroopWord.textContent = wordObj.name;
+                stroopWord.className = 'display-4 fw-bold mb-4 ' + inkObj.css;
+            }
+
+            if (stroopStartBtn) {
+                stroopStartBtn.onclick = function() {
+                    stroopScore = 0;
+                    stroopTimer = 20;
+                    if (stroopScoreEl) stroopScoreEl.textContent = '0';
+                    if (stroopTimerEl) stroopTimerEl.textContent = '20s';
+                    stroopStartBtn.disabled = true;
+
+                    nextStroopQuestion();
+                    clearInterval(stroopInterval);
+                    stroopInterval = setInterval(function() {
+                        stroopTimer--;
+                        if (stroopTimerEl) stroopTimerEl.textContent = stroopTimer + 's';
+                        if (stroopTimer <= 0) {
+                            clearInterval(stroopInterval);
+                            showAlert('Time up! Score: ' + stroopScore + ' (+20 XP)', 'success');
+                            if (stroopScore > 0) awardGameXp('Focus Challenge', 20);
+                            stroopStartBtn.disabled = false;
+                            stroopWord.textContent = 'Game Over!';
+                            stroopWord.className = 'display-4 fw-bold mb-4 text-secondary';
+                        }
+                    }, 1000);
+                };
+            }
+
+            stroopButtons.forEach(function(btn) {
+                btn.onclick = function() {
+                    if (stroopTimer <= 0) return;
+                    if (btn.dataset.color === activeColor) {
+                        stroopScore++;
+                        if (stroopScoreEl) stroopScoreEl.textContent = stroopScore;
+                    }
+                    nextStroopQuestion();
+                };
+            });
+
+            /* GAME 4: REACTION TIME */
+            var reactionBox = document.getElementById('reactionBox');
+            var reactionText = document.getElementById('reactionText');
+            var reactionScoreEl = document.getElementById('reactionScore');
+            var reactionStartTime = 0, reactionTimeout = null, reactionState = 'idle';
+
+            if (reactionBox) {
+                reactionBox.onclick = function() {
+                    if (reactionState === 'idle') {
+                        reactionState = 'waiting';
+                        reactionBox.style.backgroundColor = '#dc3545';
+                        reactionText.textContent = 'Wait for GREEN...';
+
+                        var randomDelay = Math.floor(Math.random() * 3000) + 1500;
+                        reactionTimeout = setTimeout(function() {
+                            reactionState = 'ready';
+                            reactionStartTime = Date.now();
+                            reactionBox.style.backgroundColor = '#198754';
+                            reactionText.textContent = 'CLICK NOW!';
+                        }, randomDelay);
+
+                    } else if (reactionState === 'waiting') {
+                        clearTimeout(reactionTimeout);
+                        reactionState = 'idle';
+                        reactionBox.style.backgroundColor = 'transparent';
+                        reactionText.textContent = 'Too early! Click to try again.';
+                    } else if (reactionState === 'ready') {
+                        var reactionMs = Date.now() - reactionStartTime;
+                        reactionState = 'idle';
+                        reactionBox.style.backgroundColor = 'transparent';
+                        reactionText.textContent = reactionMs + ' ms! Click to test again.';
+                        if (reactionScoreEl) reactionScoreEl.textContent = reactionMs + ' ms';
+                        showAlert('Reflexes recorded: ' + reactionMs + ' ms (+20 XP)', 'success');
+                        awardGameXp('Reaction Time', 20);
+                    }
+                };
+            }
+
+            /* GAME 5: PATTERN RECOGNITION */
+            var simonTiles = document.querySelectorAll('.simon-tile');
+            var simonStartBtn = document.getElementById('simonStartBtn');
+            var simonRoundEl = document.getElementById('simonRound');
+            var simonSequence = [], playerSequence = [], simonRound = 0;
+
+            function nextSimonRound() {
+                playerSequence = [];
+                simonRound++;
+                if (simonRoundEl) simonRoundEl.textContent = simonRound;
+
+                var nextTile = Math.floor(Math.random() * 4);
+                simonSequence.push(nextTile);
+                playSequence();
+            }
+
+            function playSequence() {
+                var i = 0;
+                var interval = setInterval(function() {
+                    flashTile(simonSequence[i]);
+                    i++;
+                    if (i >= simonSequence.length) clearInterval(interval);
+                }, 600);
+            }
+
+            function flashTile(idx) {
+                var tile = simonTiles[idx];
+                if (!tile) return;
+                tile.style.filter = 'brightness(2.5)';
+                setTimeout(function() {
+                    tile.style.filter = 'brightness(1)';
+                }, 300);
+            }
+
+            simonTiles.forEach(function(tile, index) {
+                tile.onclick = function() {
+                    if (simonSequence.length === 0) return;
+                    flashTile(index);
+                    playerSequence.push(index);
+
+                    var currStep = playerSequence.length - 1;
+                    if (playerSequence[currStep] !== simonSequence[currStep]) {
+                        showAlert('Pattern missed at round ' + simonRound + '! Try again.', 'danger');
+                        simonSequence = [];
+                        simonRound = 0;
+                        if (simonRoundEl) simonRoundEl.textContent = '0';
+                        if (simonStartBtn) simonStartBtn.disabled = false;
+                        return;
+                    }
+
+                    if (playerSequence.length === simonSequence.length) {
+                        showAlert('Pattern matched! (+20 XP)', 'success');
+                        awardGameXp('Pattern Recognition', 20);
+                        setTimeout(nextSimonRound, 800);
+                    }
+                };
+            });
+
+            if (simonStartBtn) {
+                simonStartBtn.onclick = function() {
+                    simonSequence = [];
+                    simonRound = 0;
+                    simonStartBtn.disabled = true;
+                    nextSimonRound();
+                };
+            }
+
+            // Immediately launch game without waiting
+            initMemoryGame();
+        });
+    </script>
+    <!-- AuraBot Assistant -->
+    <script src="../../assets/js/modules/aura_bot.js"></script>
+</body>
+</html>

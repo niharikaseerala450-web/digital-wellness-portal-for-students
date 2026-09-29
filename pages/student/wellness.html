@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wellness & Guided Studio | AuraGrowth</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/landing.css">
+</head>
+<body>
+    <div class="hero-glow"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-custom border-bottom border-secondary-subtle sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+                <span class="fs-4 gradient-text"><i class="fa-solid fa-spa me-2"></i>AuraGrowth</span>
+            </a>
+            <div class="ms-auto">
+                <a href="dashboard.html" class="btn btn-glass btn-sm"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-4" style="max-width: 1050px;">
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+            <div>
+                <h2 class="fw-bold mb-1">Body & Mind Wellness Studio</h2>
+                <p class="text-secondary mb-0">Learn guided yoga routines, relieve desk fatigue, and track weekly mental focus.</p>
+            </div>
+        </div>
+
+        <div id="wellnessAlert" class="alert d-none mb-3" role="alert"></div>
+
+        <!-- Navigation Tabs -->
+        <ul class="nav nav-pills gap-2 mb-4 justify-content-center" id="wellnessTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-yoga">
+                    <i class="fa-solid fa-person-praying me-2"></i>Guided Yoga & Mobility
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link btn-glass text-white" data-bs-toggle="pill" data-bs-target="#tab-assessment">
+                    <i class="fa-solid fa-clipboard-check me-2"></i>Weekly Balance Test
+                </button>
+            </li>
+        </ul>
+
+        <div class="tab-content" id="wellnessTabsContent">
+            
+            <!-- TAB 1: GUIDED LEARNING & PRACTICE -->
+            <div class="tab-pane fade show active" id="tab-yoga">
+                
+                <!-- Guided Practice Cards with Images -->
+                <div class="row g-4 mb-4">
+                    <!-- Routine 1: Surya Namaskar -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass-card h-100 d-flex flex-column border border-secondary border-opacity-25 rounded-3 overflow-hidden">
+                            <div style="height: 160px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Surya Namaskar" class="w-100 h-100 object-fit-cover">
+                                <span class="badge bg-warning text-dark position-absolute top-0 end-0 m-2"><i class="fa-solid fa-sun me-1"></i>Energy Flow</span>
+                            </div>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold text-white mb-0">Surya Namaskar</h5>
+                                    <small class="text-secondary"><i class="fa-regular fa-clock me-1"></i>3 Mins</small>
+                                </div>
+                                <p class="text-secondary small mt-2">Essential flow postures to improve full-body blood circulation and mental alertness before study blocks.</p>
+                                <div class="small text-info mb-3">
+                                    <i class="fa-solid fa-circle-check me-1"></i>Full Body Stretch • Inhale/Exhale Flow
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-gradient w-100 btn-sm" onclick="startGuidedRoutine('Surya Namaskar', 180, [
+                                        { step: '1. Pranamasana (Prayer Pose): Stand upright, palms joined at chest. Inhale and center your mind.', img: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '2. Hastauttanasana: Inhale deeply, raise arms upwards and arch your torso gently backward.', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '3. Padahastasana: Exhale and bend forward from hips, hands touching the floor or shins.', img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '4. Ashwa Sanchalanasana: Slide right leg back, look up with chest forward.', img: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '5. Dandasana (Plank): Core engaged, keep entire body in a strong straight line.', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '6. Bhujangasana (Cobra Pose): Inhale, open chest wide towards the ceiling.', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '7. Adho Mukha Svanasana: Push hips high into an inverted V-shape, deep exhales.', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80' }
+                                    ])">
+                                        <i class="fa-solid fa-play me-1"></i> Start Guided Practice
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Routine 2: Pranayama -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass-card h-100 d-flex flex-column border border-secondary border-opacity-25 rounded-3 overflow-hidden">
+                            <div style="height: 160px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Pranayama Breathwork" class="w-100 h-100 object-fit-cover">
+                                <span class="badge bg-info text-dark position-absolute top-0 end-0 m-2"><i class="fa-solid fa-wind me-1"></i>Calm & Focus</span>
+                            </div>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold text-white mb-0">Nadi Shodhana Pranayama</h5>
+                                    <small class="text-secondary"><i class="fa-regular fa-clock me-1"></i>2 Mins</small>
+                                </div>
+                                <p class="text-secondary small mt-2">Alternate nostril breathing to balance both brain hemispheres, clear anxiety, and reset working memory.</p>
+                                <div class="small text-info mb-3">
+                                    <i class="fa-solid fa-circle-check me-1"></i>4-4-4 Rhythm • Reduces Exam Anxiety
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-gradient w-100 btn-sm" onclick="startGuidedRoutine('Nadi Shodhana Pranayama', 120, [
+                                        { step: 'Step 1: Sit straight with shoulders dropped. Close right nostril using right thumb.', img: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80' },
+                                        { step: 'Step 2: Inhale smooth and deep through left nostril (Count: 1, 2, 3, 4).', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80' },
+                                        { step: 'Step 3: Close both nostrils with thumb and ring finger, hold gently (Count: 1, 2, 3, 4).', img: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80' },
+                                        { step: 'Step 4: Release right nostril and exhale completely (Count: 1, 2, 3, 4).', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80' },
+                                        { step: 'Step 5: Inhale slowly through right nostril, hold again, and exhale smoothly.', img: 'https://images.unsplash.com/photo-1545205597-3d9d02c29597?auto=format&fit=crop&w=600&q=80' }
+                                    ])">
+                                        <i class="fa-solid fa-play me-1"></i> Start Breathwork
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Routine 3: Desk Neck & Spine Mobility -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="glass-card h-100 d-flex flex-column border border-secondary border-opacity-25 rounded-3 overflow-hidden">
+                            <div style="height: 160px; overflow: hidden; position: relative;">
+                                <img src="https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80" 
+                                     alt="Desk Mobility" class="w-100 h-100 object-fit-cover">
+                                <span class="badge bg-success text-dark position-absolute top-0 end-0 m-2"><i class="fa-solid fa-chair me-1"></i>Desk Posture</span>
+                            </div>
+                            <div class="p-3 d-flex flex-column flex-grow-1">
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <h5 class="fw-bold text-white mb-0">Tech-Neck & Spine Mobility</h5>
+                                    <small class="text-secondary"><i class="fa-regular fa-clock me-1"></i>2 Mins</small>
+                                </div>
+                                <p class="text-secondary small mt-2">Targeted seated decompression stretches to relieve rounded shoulders and neck strain from laptop posture.</p>
+                                <div class="small text-info mb-3">
+                                    <i class="fa-solid fa-circle-check me-1"></i>Chair Friendly • No Mat Needed
+                                </div>
+                                <div class="mt-auto">
+                                    <button class="btn btn-gradient w-100 btn-sm" onclick="startGuidedRoutine('Desk Posture Stretch', 90, [
+                                        { step: '1. Chin Tucks: Glide head straight backwards, aligning ears above shoulders (Hold 15s).', img: 'https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '2. Seated Cat-Cow: Palms on knees, arch back upward, then curve spine forward.', img: 'https://images.unsplash.com/photo-1518611012118-696072aa579a?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '3. Shoulder Blade Retraction: Squeeze shoulder blades backward with slow exhales.', img: 'https://images.unsplash.com/photo-1599447421416-3414500d18a5?auto=format&fit=crop&w=600&q=80' },
+                                        { step: '4. Chair Torso Twist: Hold backrest, gently rotate torso right, then repeat left.', img: 'https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=600&q=80' }
+                                    ])">
+                                        <i class="fa-solid fa-play me-1"></i> Start Desk Mobility
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Completed Sessions -->
+                <div class="glass-panel p-4">
+                    <h5 class="fw-bold mb-3"><i class="fa-solid fa-clock-rotate-left text-info me-2"></i>Completed Learning & Routine History</h5>
+                    <div id="activityHistoryList">
+                        <p class="text-secondary text-center my-3 small">Loading completed sessions...</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: WEEKLY DIGITAL WELLNESS TEST -->
+            <div class="tab-pane fade" id="tab-assessment">
+                <div class="glass-panel p-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0"><i class="fa-solid fa-square-poll-vertical text-success me-2"></i>Weekly Cognitive & Screen Health Audit</h5>
+                        <span class="badge bg-secondary-subtle text-secondary">Every 7 Days</span>
+                    </div>
+                    <p class="text-secondary small mb-4">Rate your past 7 days accurately on a scale of 1 to 10 to calibrate study stamina and digital overload.</p>
+
+                    <form id="assessmentForm">
+                        <div class="mb-4">
+                            <label class="form-label d-flex justify-content-between">
+                                <span>Deep Work & Study Focus (1 = Heavily Distracted, 10 = Flow State)</span>
+                                <span id="focusVal" class="fw-bold text-info">7</span>
+                            </label>
+                            <input type="range" class="form-range" min="1" max="10" value="7" id="rangeFocus">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label d-flex justify-content-between">
+                                <span>Stress & Academic Anxiety (1 = Peaceful/Relaxed, 10 = Overwhelmed)</span>
+                                <span id="stressVal" class="fw-bold text-warning">4</span>
+                            </label>
+                            <input type="range" class="form-range" min="1" max="10" value="4" id="rangeStress">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label d-flex justify-content-between">
+                                <span>Screen-Time Balance (1 = Doomscrolling/Late Night, 10 = Clean Digital Boundaries)</span>
+                                <span id="screenVal" class="fw-bold text-success">6</span>
+                            </label>
+                            <input type="range" class="form-range" min="1" max="10" value="6" id="rangeScreen">
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label text-secondary small">Key Reflection or Goal for Next Week</label>
+                            <textarea id="reflectionNotes" class="form-control bg-transparent text-white border-secondary" rows="3" placeholder="What habit helped you most this week? What drained your energy?"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-gradient px-4 py-2">
+                            <i class="fa-solid fa-paper-plane me-1"></i> Submit Weekly Assessment
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Interactive Guided Routine Modal with Dynamic Photo Frame -->
+    <div class="modal fade" id="guidedRoutineModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content bg-dark text-white border border-secondary shadow-lg">
+                <div class="modal-header border-secondary">
+                    <h5 class="modal-title fw-bold" id="modalRoutineTitle">Guided Practice</h5>
+                    <button type="button" class="btn-close btn-close-white" onclick="exitRoutine()"></button>
+                </div>
+                <div class="modal-body text-center p-4">
+                    <!-- Dynamic Step Reference Photo -->
+                    <div class="rounded-3 overflow-hidden mb-3 border border-secondary border-opacity-50" style="height: 200px;">
+                        <img id="modalStepImg" src="" alt="Pose Reference" class="w-100 h-100 object-fit-cover">
+                    </div>
+
+                    <div class="display-3 fw-bold text-warning mb-2" id="routineTimerDisplay">00:00</div>
+                    <div class="progress mb-4" style="height: 8px; background: rgba(255,255,255,0.1);">
+                        <div id="routineProgressBar" class="progress-bar bg-success progress-bar-striped progress-bar-animated" style="width: 0%;"></div>
+                    </div>
+
+                    <div class="p-3 rounded-3 text-start mb-4" style="background: rgba(255,255,255,0.06); min-height: 90px;">
+                        <span class="text-secondary small text-uppercase fw-semibold d-block mb-1">Current Guidance</span>
+                        <h6 class="text-info fw-bold mb-0 lh-base" id="modalStepText">Preparing routine...</h6>
+                    </div>
+
+                    <div class="d-flex justify-content-center gap-2">
+                        <button id="routinePauseBtn" class="btn btn-primary px-4" onclick="togglePauseRoutine()">
+                            <i class="fa-solid fa-pause me-1"></i> Pause
+                        </button>
+                        <button class="btn btn-outline-danger px-3" onclick="exitRoutine()">
+                            <i class="fa-solid fa-stop me-1"></i> Stop Routine
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Core Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config/supabase-config.js"></script>
+
+    <!-- Guided Wellness Engine -->
+    <script>
+        var routineTimer = null;
+        var totalSecs = 0;
+        var elapsedSecs = 0;
+        var currentSteps = [];
+        var activeRoutineTitle = '';
+        var isPaused = false;
+        var modalInstance = null;
+        var currentUser = null;
+
+        function updateDisplay() {
+            var rem = Math.max(0, totalSecs - elapsedSecs);
+            var m = Math.floor(rem / 60);
+            var s = rem % 60;
+            document.getElementById('routineTimerDisplay').textContent = 
+                (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+
+            var pct = Math.min(100, Math.round((elapsedSecs / totalSecs) * 100));
+            document.getElementById('routineProgressBar').style.width = pct + '%';
+
+            if (currentSteps.length > 0) {
+                var stepInterval = Math.max(1, Math.floor(totalSecs / currentSteps.length));
+                var idx = Math.min(Math.floor(elapsedSecs / stepInterval), currentSteps.length - 1);
+                var activeObj = currentSteps[idx];
+
+                document.getElementById('modalStepText').textContent = activeObj.step;
+                if (activeObj.img) {
+                    document.getElementById('modalStepImg').src = activeObj.img;
+                }
+            }
+        }
+
+        function startGuidedRoutine(title, durationSeconds, steps) {
+            activeRoutineTitle = title;
+            totalSecs = durationSeconds;
+            elapsedSecs = 0;
+            currentSteps = steps;
+            isPaused = false;
+
+            document.getElementById('modalRoutineTitle').textContent = title;
+            document.getElementById('routinePauseBtn').classList.remove('d-none');
+            document.getElementById('routinePauseBtn').innerHTML = '<i class="fa-solid fa-pause me-1"></i> Pause';
+
+            updateDisplay();
+
+            var el = document.getElementById('guidedRoutineModal');
+            modalInstance = new bootstrap.Modal(el);
+            modalInstance.show();
+
+            if (routineTimer) clearInterval(routineTimer);
+            routineTimer = setInterval(async function() {
+                if (isPaused) return;
+                elapsedSecs++;
+                updateDisplay();
+
+                if (elapsedSecs >= totalSecs) {
+                    clearInterval(routineTimer);
+                    document.getElementById('modalStepText').innerHTML = '<span class="text-success fw-bold"><i class="fa-solid fa-circle-check me-2"></i>Great Job! Session Completed & +30 XP Logged.</span>';
+                    document.getElementById('routinePauseBtn').classList.add('d-none');
+                    
+                    // Auto-record session to Supabase & update history
+                    await autoRecordSession(activeRoutineTitle, Math.round(totalSecs / 60));
+                }
+            }, 1000);
+        }
+
+        function togglePauseRoutine() {
+            isPaused = !isPaused;
+            var btn = document.getElementById('routinePauseBtn');
+            btn.innerHTML = isPaused ? '<i class="fa-solid fa-play me-1"></i> Resume' : '<i class="fa-solid fa-pause me-1"></i> Pause';
+        }
+
+        function exitRoutine() {
+            if (routineTimer) clearInterval(routineTimer);
+            if (modalInstance) modalInstance.hide();
+        }
+
+        async function autoRecordSession(title, durationMins) {
+            if (!window.sb || !currentUser) return;
+            try {
+                await window.sb.from('physical_activities').insert([{
+                    user_id: currentUser.id,
+                    activity_type: title,
+                    duration_minutes: durationMins || 2,
+                    intensity: 'Guided Routine',
+                    xp_earned: 30
+                }]);
+                loadActivities();
+            } catch (e) {
+                console.error('Session record error:', e);
+            }
+        }
+
+        async function loadActivities() {
+            var historyList = document.getElementById('activityHistoryList');
+            if (!historyList || !window.sb || !currentUser) return;
+
+            try {
+                var { data, error } = await window.sb
+                    .from('physical_activities')
+                    .select('*')
+                    .eq('user_id', currentUser.id)
+                    .order('created_at', { ascending: false })
+                    .limit(6);
+
+                if (error) throw error;
+                if (!data || data.length === 0) {
+                    historyList.innerHTML = '<p class="text-secondary text-center my-3 small">No guided sessions completed yet. Select a routine above to start!</p>';
+                    return;
+                }
+
+                historyList.innerHTML = data.map(function(item) {
+                    var dt = item.created_at ? new Date(item.created_at).toLocaleDateString() : 'Today';
+                    return (
+                        '<div class="card bg-dark border-secondary p-3 mb-2 d-flex flex-row justify-content-between align-items-center text-white">' +
+                            '<div>' +
+                                '<h6 class="mb-0 fw-semibold"><i class="fa-solid fa-circle-check text-success me-2"></i>' + item.activity_type + '</h6>' +
+                                '<small class="text-secondary">' + item.duration_minutes + ' Mins &bull; Guided Practice</small>' +
+                            '</div>' +
+                            '<div class="text-end">' +
+                                '<span class="badge bg-warning text-dark">+' + (item.xp_earned || 30) + ' XP</span>' +
+                                '<div class="small text-secondary mt-1">' + dt + '</div>' +
+                            '</div>' +
+                        '</div>'
+                    );
+                }).join('');
+            } catch (err) {
+                console.warn(err);
+                historyList.innerHTML = '<p class="text-secondary text-center my-3 small">Completed routines will appear here.</p>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            var alertBox = document.getElementById('wellnessAlert');
+            function showAlert(msg, type) {
+                if (!alertBox) return;
+                alertBox.className = 'alert alert-' + (type || 'success') + ' py-2 px-3 small';
+                alertBox.textContent = msg;
+                alertBox.classList.remove('d-none');
+                setTimeout(function() { alertBox.classList.add('d-none'); }, 3500);
+            }
+
+            // Auth verification
+            if (window.sb) {
+                var { data: { session } } = await window.sb.auth.getSession();
+                if (!session) {
+                    window.location.href = '../auth/login.html';
+                    return;
+                }
+                currentUser = session.user;
+                loadActivities();
+            }
+
+            // Range slider live listeners
+            function bindRange(id, targetId) {
+                var el = document.getElementById(id);
+                var target = document.getElementById(targetId);
+                if (el && target) el.oninput = function() { target.textContent = el.value; };
+            }
+            bindRange('rangeFocus', 'focusVal');
+            bindRange('rangeStress', 'stressVal');
+            bindRange('rangeScreen', 'screenVal');
+
+            // Weekly Assessment Form
+            var assessForm = document.getElementById('assessmentForm');
+            function getMonday(d) {
+                d = new Date(d);
+                var day = d.getDay(), diff = d.getDate() - day + (day === 0 ? -6 : 1);
+                return new Date(d.setDate(diff)).toISOString().split('T')[0];
+            }
+
+            if (assessForm) {
+                assessForm.onsubmit = async function(e) {
+                    e.preventDefault();
+                    if (!window.sb || !currentUser) return;
+                    var focus = parseInt(document.getElementById('rangeFocus').value, 10);
+                    var stress = parseInt(document.getElementById('rangeStress').value, 10);
+                    var screen = parseInt(document.getElementById('rangeScreen').value, 10);
+                    var notes = document.getElementById('reflectionNotes').value.trim();
+
+                    try {
+                        var { error } = await window.sb.from('weekly_assessments').insert([{
+                            user_id: currentUser.id,
+                            focus_score: focus,
+                            stress_level: stress,
+                            screen_balance: screen,
+                            reflection_notes: notes,
+                            week_start_date: getMonday(new Date())
+                        }]);
+
+                        if (error) throw error;
+                        showAlert('Weekly wellness assessment submitted successfully! Great reflection.', 'success');
+                        assessForm.reset();
+                    } catch (err) {
+                        console.error(err);
+                        showAlert('Failed to submit assessment.', 'danger');
+                    }
+                };
+            }
+        });
+    </script>
+    <!-- AuraBot Widget -->
+    <script src="../../assets/js/modules/aura_bot.js"></script>
+</body>
+</html>

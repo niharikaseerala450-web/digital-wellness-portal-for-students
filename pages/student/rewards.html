@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewards & Milestone Badges | AuraGrowth</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <link rel="stylesheet" href="../../assets/css/variables.css">
+    <link rel="stylesheet" href="../../assets/css/main.css">
+    <link rel="stylesheet" href="../../assets/css/landing.css">
+    <style>
+        .badge-card {
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .badge-card.unlocked {
+            border-color: rgba(255, 193, 7, 0.5) !important;
+            background: rgba(255, 193, 7, 0.05);
+        }
+        .badge-card.locked {
+            opacity: 0.55;
+            filter: grayscale(80%);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="hero-glow"></div>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-custom border-bottom border-secondary-subtle sticky-top">
+        <div class="container-fluid px-4">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="dashboard.html">
+                <span class="fs-4 gradient-text"><i class="fa-solid fa-brain me-2"></i>AuraGrowth</span>
+            </a>
+            <div class="d-flex align-items-center gap-3 ms-auto">
+                <a href="dashboard.html" class="btn btn-glass btn-sm"><i class="fa-solid fa-arrow-left me-1"></i> Dashboard</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container py-4" style="max-width: 950px;">
+        
+        <!-- Header & Level Overview -->
+        <div class="glass-panel p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-3">
+                <div>
+                    <span class="text-secondary small fw-medium">Current Tier</span>
+                    <h2 class="fw-bold gradient-text mb-0" id="userLevelText">Level 1</h2>
+                </div>
+                <span class="badge bg-warning text-dark px-3 py-2 fw-semibold">
+                    <i class="fa-solid fa-medal me-1"></i> Scholar Track
+                </span>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center small text-secondary mb-1">
+                <span>Progress to next tier</span>
+                <span id="userXpProgressText">0 XP / 100 XP</span>
+            </div>
+            <div class="progress" style="height: 12px;">
+                <div id="userXpBar" class="progress-bar bg-gradient" style="width: 0%;"></div>
+            </div>
+        </div>
+
+        <!-- Badges Grid -->
+        <h4 class="fw-bold mb-3"><i class="fa-solid fa-award text-warning me-2"></i>Milestone Badges</h4>
+
+        <div class="row g-3" id="badgesContainer">
+            <!-- First Step -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-first_step">
+                    <i class="fa-solid fa-shoe-prints fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">First Step</h5>
+                    <p class="text-secondary small mb-3">Log your first daily wellness survey or exercise.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+
+            <!-- Zen Master -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-zen_master">
+                    <i class="fa-solid fa-spa fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Zen Master</h5>
+                    <p class="text-secondary small mb-3">Log 5 or more mindfulness or yoga checks.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+
+            <!-- Habit Builder -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-habit_builder">
+                    <i class="fa-solid fa-bullseye fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Habit Builder</h5>
+                    <p class="text-secondary small mb-3">Track at least 3 active habits in your daily list.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+
+            <!-- Brain Sharpener -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-brain_sharpener">
+                    <i class="fa-solid fa-brain fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Brain Sharpener</h5>
+                    <p class="text-secondary small mb-3">Complete 3 cognitive focus brain games.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+
+            <!-- Pathfinder -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-pathfinder">
+                    <i class="fa-solid fa-compass fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">Pathfinder</h5>
+                    <p class="text-secondary small mb-3">Complete at least 2 roadmap milestones.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+
+            <!-- XP Warrior -->
+            <div class="col-md-4 col-sm-6">
+                <div class="glass-card p-4 text-center h-100 badge-card locked" id="badge-xp_warrior">
+                    <i class="fa-solid fa-trophy fs-1 text-secondary mb-3"></i>
+                    <h5 class="fw-bold mb-1">XP Warrior</h5>
+                    <p class="text-secondary small mb-3">Reach 200 total XP points across all modules.</p>
+                    <span class="badge bg-secondary status-tag"><i class="fa-solid fa-lock me-1"></i>Locked</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="../../assets/js/config/supabase-config.js"></script>
+
+    <!-- Embedded Rewards Engine -->
+    <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            var { data: { session }, error } = await window.sb.auth.getSession();
+            if (!session || error) {
+                window.location.href = '../auth/login.html';
+                return;
+            }
+
+            var user = session.user;
+            var levelText = document.getElementById('userLevelText');
+            var xpText = document.getElementById('userXpProgressText');
+            var xpBar = document.getElementById('userXpBar');
+
+            async function loadRewards() {
+                try {
+                    var { data, error } = await window.sb.rpc('get_user_gamification_profile', {
+                        target_user_id: user.id
+                    });
+
+                    if (error) throw error;
+
+                    var totalXp = data.total_xp || 0;
+                    var level = data.level || 1;
+                    var targetXp = data.next_level_target || 100;
+
+                    // Update Tier & XP numbers cleanly
+                    if (levelText) levelText.textContent = 'Level ' + level;
+                    if (xpText) xpText.textContent = totalXp + ' XP / ' + targetXp + ' XP';
+
+                    // Progress percentage calculation
+                    var prevLevelBase = (level - 1) * 100;
+                    var currentTierProgress = totalXp - prevLevelBase;
+                    var percentage = Math.min(100, Math.max(0, Math.round((currentTierProgress / 100) * 100)));
+                    if (xpBar) xpBar.style.width = percentage + '%';
+
+                    // Unlock Badges
+                    var unlockedBadges = data.unlocked_badges || [];
+                    unlockedBadges.forEach(function(badgeKey) {
+                        var card = document.getElementById('badge-' + badgeKey);
+                        if (card) {
+                            card.classList.remove('locked');
+                            card.classList.add('unlocked');
+
+                            var icon = card.querySelector('i');
+                            if (icon) {
+                                icon.classList.remove('text-secondary');
+                                icon.classList.add('text-warning');
+                            }
+
+                            var tag = card.querySelector('.status-tag');
+                            if (tag) {
+                                tag.className = 'badge bg-success status-tag';
+                                tag.innerHTML = '<i class="fa-solid fa-check me-1"></i>Unlocked';
+                            }
+                        }
+                    });
+
+                } catch (err) {
+                    console.error('Error loading gamification profile:', err);
+                }
+            }
+
+            loadRewards();
+        });
+    </script>
+</body>
+</html>
