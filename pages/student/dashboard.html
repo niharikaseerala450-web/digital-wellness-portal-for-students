@@ -121,10 +121,10 @@
                 <div class="dropdown">
                     <button class="btn btn-glass dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown">
                         <img id="userAvatar" src="https://api.dicebear.com/7.x/bottts/svg?seed=student" alt="Avatar" width="28" height="28" class="rounded-circle bg-secondary">
-                        <span id="userName" class="small fw-semibold">Loading...</span>
+                        <span id="userName" class="small fw-semibold">Student</span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-end shadow border-secondary-subtle">
-                        <li><h6 class="dropdown-header text-truncate" id="userEmail">student@example.com</h6></li>
+                        <li><h6 class="dropdown-header text-truncate" id="userEmail">student@auragrowth.app</h6></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item text-danger" href="#" id="logoutBtn"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Sign Out</a></li>
                     </ul>
@@ -155,7 +155,7 @@
                 <div class="glass-card p-4 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
                     <div>
                         <h2 class="fw-bold mb-1">Welcome back to your workspace!</h2>
-                        <p class="text-secondary mb-0">Track your me ntal wellness, study consistency, and daily habits.</p>
+                        <p class="text-secondary mb-0">Track your mental wellness, study consistency, and daily habits.</p>
                     </div>
                     <div class="d-flex gap-2 flex-wrap">
                         <a href="wellness.html" class="btn btn-glass"><i class="fa-solid fa-person-praying me-1"></i> Log Yoga/Movement</a>
@@ -194,7 +194,6 @@
                         </div>
                     </div>
                 </div>
-
                 <!-- Enrolled Roadmap Tracks Section -->
                 <div class="glass-panel p-4 mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -289,7 +288,6 @@
                 </div>
                 <div>
                     <h6 class="mb-0 fw-bold text-white small">AuraBot Assistant</h6>
-                   
                 </div>
             </div>
             <button id="aura-close-btn" class="btn btn-sm text-secondary p-0"><i class="fa-solid fa-xmark fs-6"></i></button>
@@ -473,8 +471,8 @@
             },
             {
                 keywords: ['hi', 'hello', 'hey', 'namaste', 'morning', 'evening', 'help'],
-                reply: 'Hello! Nenu mee AuraGrowth AI Study Buddy 🤖.<br><br>' +
-                       'Nenu meeku coding roadmaps, study habits, focus tips, mariyu wellness guidance ivvagalanoo. Above quick prompt chips click cheyandi leda mee question type cheyandi!'
+                reply: 'Hello! I'm your AuraGrowth AI Study Buddy 🤖.<br><br>' +
+                       'I will provide coding roadmaps, study habits, focus tips, and also wellness guidance. Click Above quick prompt chips  or  type the questions!'
             }
         ];
 
@@ -548,127 +546,86 @@
             window.sendAuraPrompt(text);
         };
     </script>
-    <!-- Habits & Streak Live Sync Script for Dashboard -->
+
+    <!-- Unified Real-time Habit & Streak Sync Engine -->
     <script>
-        function syncDashboardHabits() {
+        async function syncHabitsWithDashboard() {
             var streakEl = document.getElementById('dashTopStreak');
             var habitsDoneEl = document.getElementById('dashHabitsDone');
             var pctEl = document.getElementById('dashHabitPercentage');
 
             if (!streakEl || !habitsDoneEl) return;
 
+            var total = 0;
+            var completed = 0;
+            var maxStreak = 0;
+
+            // 1. Supabase check
             try {
-                var habits = JSON.parse(localStorage.getItem('aura_habits') || '[]');
-                if (Array.isArray(habits) && habits.length > 0) {
-                    var total = habits.length;
-                    var completed = habits.filter(function(h) { 
-                        return h.completed_today || h.is_completed; 
-                    }).length;
+                var client = window.sb || window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
+                if (client && client.auth) {
+                    var authRes = await client.auth.getUser();
+                    var user = authRes.data ? authRes.data.user : null;
+                    if (user) {
+                        var res = await client
+                            .from('habits')
+                            .select('*')
+                            .eq('user_id', user.id);
 
-                    var maxStreak = 0;
-                    habits.forEach(function(h) {
-                        var s = parseInt(h.streak_days || h.streak || 0, 10);
-                        if (s > maxStreak) maxStreak = s;
-                    });
-
-                    if (completed > 0 && maxStreak === 0) maxStreak = 1;
-
-                    var pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-                    streakEl.innerText = maxStreak + ' Days';
-                    habitsDoneEl.innerText = completed + ' / ' + total;
-                    if (pctEl) pctEl.innerText = pct + '% Completed';
-                    return;
+                        if (!res.error && res.data && res.data.length > 0) {
+                            total = res.data.length;
+                            completed = res.data.filter(function(h) { 
+                                return h.completed || h.completed_today || h.is_done; 
+                            }).length;
+                            maxStreak = res.data.reduce(function(max, h) { 
+                                return Math.max(max, parseInt(h.streak || h.streak_days || h.current_streak || 0, 10)); 
+                            }, 0);
+                        }
+                    }
                 }
-            } catch(e) {}
+            } catch(e) {
+                console.warn('Supabase habit sync:', e);
+            }
 
-            if (streakEl.innerText === '0 Days') {
-                streakEl.innerText = '0 Day';
-                habitsDoneEl.innerText = '0 / 0';
-                if (pctEl) pctEl.innerText = '100% Completed';
+            // 2. LocalStorage (aura_habits) check
+            if (total === 0) {
+                try {
+                    var localHabits = JSON.parse(localStorage.getItem('aura_habits') || '[]');
+                    if (Array.isArray(localHabits) && localHabits.length > 0) {
+                        total = localHabits.length;
+                        completed = localHabits.filter(function(h) { 
+                            return h.completed_today || h.is_completed || h.completed; 
+                        }).length;
+                        maxStreak = localHabits.reduce(function(max, h) { 
+                            return Math.max(max, parseInt(h.streak || h.streak_days || 0, 10)); 
+                        }, 0);
+                    }
+                } catch(e) {
+                    console.warn('LocalStorage habit sync:', e);
+                }
+            }
+
+            // 3. Fallback logic: If habits are completed today but streak is 0, show at least 1 Day
+            if (completed > 0 && maxStreak === 0) {
+                maxStreak = 1;
+            }
+
+            // 4. Update the Dashboard UI
+            streakEl.innerText = maxStreak + (maxStreak === 1 ? ' Day' : ' Days');
+            habitsDoneEl.innerText = completed + ' / ' + total;
+
+            var percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
+            if (pctEl) {
+                pctEl.innerText = percentage + '% Completed';
             }
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            syncDashboardHabits();
-            setTimeout(syncDashboardHabits, 500);
-            setTimeout(syncDashboardHabits, 1500);
-        });
+        // Run instantly and on periodic intervals for real-time reflection
+        document.addEventListener('DOMContentLoaded', syncHabitsWithDashboard);
+        window.addEventListener('load', syncHabitsWithDashboard);
+        setTimeout(syncHabitsWithDashboard, 300);
+        setTimeout(syncHabitsWithDashboard, 1000);
+        setTimeout(syncHabitsWithDashboard, 2500);
     </script>
-    <!-- Habits to Dashboard Auto-Sync Script -->
-<script>
-async function updateDashboardHabitStats() {
-    let total = 0;
-    let completed = 0;
-    let maxStreak = 0;
-
-    // 1. Try fetching from Supabase first
-    try {
-        const client = window.sb || window.supabaseClient || (typeof supabase !== 'undefined' ? supabase : null);
-        if (client && client.auth) {
-            const { data: { user } } = await client.auth.getUser();
-            if (user) {
-                const { data: habits, error } = await client
-                    .from('habits')
-                    .select('*')
-                    .eq('user_id', user.id);
-
-                if (!error && habits && habits.length > 0) {
-                    total = habits.length;
-                    completed = habits.filter(h => h.completed || h.completed_today || h.is_done).length;
-                    maxStreak = habits.reduce((max, h) => Math.max(max, h.streak || h.current_streak || 0), 0);
-                }
-            }
-        }
-    } catch (e) {
-        console.log("Supabase fetch fallback:", e);
-    }
-
-    // 2. If Supabase is empty or delayed, read from aura_habits (LocalStorage)
-    if (total === 0) {
-        try {
-            const localHabits = JSON.parse(localStorage.getItem('aura_habits') || '[]');
-            if (Array.isArray(localHabits) && localHabits.length > 0) {
-                total = localHabits.length;
-                completed = localHabits.filter(h => h.completed_today || h.is_completed || h.completed).length;
-                maxStreak = localHabits.reduce((max, h) => Math.max(max, h.streak || 0), 0);
-            }
-        } catch (e) {}
-    }
-
-    // 3. Find the Dashboard elements on screen and inject the values
-    // Find streak card
-    const streakElements = Array.from(document.querySelectorAll('h3, div, p')).filter(el => 
-        el.innerText && (el.innerText.includes('Day') || el.innerText === '0') && 
-        el.parentElement && el.parentElement.innerText.includes('Active Streak')
-    );
-    if (streakElements.length > 0) {
-        streakElements[0].innerText = ${maxStreak} Day${maxStreak === 1 ? '' : 's'};
-    }
-
-    // Find Habits Done Today card
-    const doneElements = Array.from(document.querySelectorAll('h3, div, p')).filter(el => 
-        el.innerText && (el.innerText.includes('/') || el.innerText === '0/0') && 
-        el.parentElement && el.parentElement.innerText.includes('Habits Done Today')
-    );
-    if (doneElements.length > 0) {
-        doneElements[0].innerText = ${completed}/${total};
-    }
-
-    // Find Percentage text if present
-    const percentElements = Array.from(document.querySelectorAll('small, span, div')).filter(el => 
-        el.innerText && el.innerText.includes('Completed') && 
-        el.parentElement && el.parentElement.innerText.includes('Habits Done Today')
-    );
-    if (percentElements.length > 0) {
-        const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
-        percentElements[0].innerText = ${pct}% Completed;
-    }
-}
-
-// Run immediately when dashboard loads
-document.addEventListener('DOMContentLoaded', updateDashboardHabitStats);
-window.addEventListener('load', updateDashboardHabitStats);
-</script>
 </body>
 </html>
