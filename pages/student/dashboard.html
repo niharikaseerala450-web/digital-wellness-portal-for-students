@@ -162,8 +162,7 @@
                         <a href="habits.html" class="btn btn-gradient"><i class="fa-solid fa-plus me-1"></i> Check Habits</a>
                     </div>
                 </div>
-
-                <!-- Live Synced Metrics -->
+<!-- Live Synced Metrics -->
                 <div class="row g-3 mb-4">
                     <div class="col-sm-6 col-xl-3">
                         <div class="glass-panel p-3 text-center">
@@ -194,6 +193,7 @@
                         </div>
                     </div>
                 </div>
+
                 <!-- Enrolled Roadmap Tracks Section -->
                 <div class="glass-panel p-4 mb-4">
                     <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
@@ -274,13 +274,12 @@
             </div>
         </div>
     </div>
-
     <!-- Floating Static AI Assistant (AuraBot) Widget Markup -->
     <div id="aura-bot-launcher" title="AuraBot Study AI">
         <i class="fa-solid fa-robot"></i>
     </div>
 
-    <div id="aura-chat-window">
+    <div id="aura-chat-window" style="display: none;">
         <div class="p-3 border-bottom border-secondary border-opacity-25 d-flex justify-content-between align-items-center" style="background: rgba(255,255,255,0.03);">
             <div class="d-flex align-items-center gap-2">
                 <div class="rounded-circle p-1 bg-primary text-white d-flex align-items-center justify-content-center" style="width:28px; height:28px;">
@@ -290,7 +289,7 @@
                     <h6 class="mb-0 fw-bold text-white small">AuraBot Assistant</h6>
                 </div>
             </div>
-            <button id="aura-close-btn" class="btn btn-sm text-secondary p-0"><i class="fa-solid fa-xmark fs-6"></i></button>
+            <button id="aura-close-btn" type="button" class="btn btn-sm text-secondary p-0"><i class="fa-solid fa-xmark fs-6"></i></button>
         </div>
 
         <div id="aura-chat-messages">
@@ -298,9 +297,9 @@
                 Hi student! I'm AuraBot, your local study & wellness buddy. How can I guide you today?
             </div>
             <div class="mb-2">
-                <span class="bot-chip" onclick="sendAuraPrompt('How to practice DSA?')">💡 DSA Guide</span>
-                <span class="bot-chip" onclick="sendAuraPrompt('I feel stressed with exams')">🧘 Exam Stress</span>
-                <span class="bot-chip" onclick="sendAuraPrompt('How to build study habits?')">🎯 Habit Tips</span>
+                <span class="bot-chip" onclick="window.sendAuraPrompt('How to practice DSA?')">💡 DSA Guide</span>
+                <span class="bot-chip" onclick="window.sendAuraPrompt('I feel stressed with exams')">🧘 Exam Stress</span>
+                <span class="bot-chip" onclick="window.sendAuraPrompt('How to build study habits?')">🎯 Habit Tips</span>
             </div>
         </div>
 
@@ -309,6 +308,7 @@
             <button type="submit" class="btn btn-primary btn-sm px-3"><i class="fa-solid fa-paper-plane"></i></button>
         </form>
     </div>
+
     <!-- Core Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -316,7 +316,6 @@
     <!-- Roadmap Progress Sync Engine -->
     <script src="../../assets/js/modules/roadmap_progress.js"></script>
     <script src="../../assets/js/app/dashboard.app.js"></script>
-
     <!-- Roadmap Dashboard Live Cards Script -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -434,117 +433,127 @@
         });
     </script>
 
-    <!-- Static AI Assistant (AuraBot) Engine Script -->
+    <!-- Static AI Assistant (AuraBot) Engine Script (Fixed) -->
     <script>
-        var auraKnowledge = [
-            {
-                keywords: ['dsa', 'algorithm', 'leetcode', 'array', 'tree', 'graph', 'data structure', 'cs'],
-                reply: 'DSA preparation ki daily consistency chaala important!<br><br>' +
-                       '📌 <b>Recommended Strategy:</b><br>' +
-                       '1. Arrays, Strings & Two Pointers nunchi start cheyandi.<br>' +
-                       '2. Recursion & Sliding Window concepts practice cheyandi.<br>' +
-                       '3. Trees, Graphs & DP master cheyandi.<br><br>' +
-                       '👉 Check our <a href="roadmaps.html" class="text-info fw-bold">Core CS & DSA Track</a> to complete weekly modules!'
-            },
-            {
-                keywords: ['web', 'fullstack', 'frontend', 'backend', 'html', 'css', 'javascript', 'react', 'node'],
-                reply: 'Full Stack Developer avvadaniki 3-phase path follow avvandi:<br><br>' +
-                       '🌐 <b>Recommended Order:</b><br>' +
-                       '1. HTML5, Modern CSS, Responsive Design & JS ES6+.<br>' +
-                       '2. Backend APIs with Node/Express & Supabase/PostgreSQL.<br>' +
-                       '3. React.js state management & full project deployment.<br><br>' +
-                       '👉 Start practicing at <a href="roadmaps.html" class="text-info fw-bold">Full Stack Roadmap</a>.'
-            },
-            {
-                keywords: ['stress', 'anxious', 'anxiety', 'tired', 'burnout', 'headache', 'tension', 'relax', 'exhausted'],
-                reply: 'Exam stress & long study hours manage cheyadaniki chinna reset avasaram:<br><br>' +
-                       '🧘 <b>Quick Relief Tips:</b><br>' +
-                       '• 2-minutes <i>Nadi Shodhana Pranayama</i> (alternate nostril breathing) try cheyandi.<br>' +
-                       '• Take 20-20-20 rule: Every 20 mins, look 20 feet away for 20 seconds.<br><br>' +
-                       '👉 Launch a guided session at <a href="wellness.html" class="text-success fw-bold">Yoga & Wellness Studio</a>!'
-            },
-            {
-                keywords: ['habit', 'streak', 'routine', 'consistency', 'discipline', 'target'],
-                reply: 'Habits build cheyadam lo "Atomic Habits" rule chaala help avthundi:<br><br>' +
-                       '🎯 <b>Key Tip:</b> Keep it under 2 minutes first (e.g., solve just 1 easy problem daily). Daily streak break avvakunda unte automatic ga routine set avthundi.<br><br>' +
-                       '👉 Track your active goals at <a href="habits.html" class="text-warning fw-bold">Habit Tracker</a>.'
-            },
-            {
-                keywords: ['hi', 'hello', 'hey', 'namaste', 'morning', 'evening', 'help'],
-                reply: 'Hello! I'm your AuraGrowth AI Study Buddy 🤖.<br><br>' +
-                       'I will provide coding roadmaps, study habits, focus tips, and also wellness guidance. Click Above quick prompt chips  or  type the questions!'
+        document.addEventListener('DOMContentLoaded', function() {
+            var auraKnowledge = [
+                {
+                    keywords: ['dsa', 'algorithm', 'leetcode', 'array', 'tree', 'graph', 'data structure', 'cs'],
+                    reply: 'DSA preparation ki daily consistency chaala important!<br><br>' +
+                           '📌 <b>Recommended Strategy:</b><br>' +
+                           '1. Arrays, Strings & Two Pointers nunchi start cheyandi.<br>' +
+                           '2. Recursion & Sliding Window concepts practice cheyandi.<br>' +
+                           '3. Trees, Graphs & DP master cheyandi.<br><br>' +
+                           '👉 Check our <a href="roadmaps.html" class="text-info fw-bold">Core CS & DSA Track</a> to complete weekly modules!'
+                },
+                {
+                    keywords: ['web', 'fullstack', 'frontend', 'backend', 'html', 'css', 'javascript', 'react', 'node'],
+                    reply: 'Full Stack Developer avvadaniki 3-phase path follow avvandi:<br><br>' +
+                           '🌐 <b>Recommended Order:</b><br>' +
+                           '1. HTML5, Modern CSS, Responsive Design & JS ES6+.<br>' +
+                           '2. Backend APIs with Node/Express & Supabase/PostgreSQL.<br>' +
+                           '3. React.js state management & full project deployment.<br><br>' +
+                           '👉 Start practicing at <a href="roadmaps.html" class="text-info fw-bold">Full Stack Roadmap</a>.'
+                },
+                {
+                    keywords: ['stress', 'anxious', 'anxiety', 'tired', 'burnout', 'headache', 'tension', 'relax', 'exhausted'],
+                    reply: 'Exam stress & long study hours manage cheyadaniki chinna reset avasaram:<br><br>' +
+                           '🧘 <b>Quick Relief Tips:</b><br>' +
+                           '• 2-minutes <i>Nadi Shodhana Pranayama</i> (alternate nostril breathing) try cheyandi.<br>' +
+                           '• Take 20-20-20 rule: Every 20 mins, look 20 feet away for 20 seconds.<br><br>' +
+                           '👉 Launch a guided session at <a href="wellness.html" class="text-success fw-bold">Yoga & Wellness Studio</a>!'
+                },
+                {
+                    keywords: ['habit', 'streak', 'routine', 'consistency', 'discipline', 'target'],
+                    reply: 'Habits build cheyadam lo "Atomic Habits" rule chaala help avthundi:<br><br>' +
+                           '🎯 <b>Key Tip:</b> Keep it under 2 minutes first (e.g., solve just 1 easy problem daily). Daily streak break avvakunda unte automatic ga routine set avthundi.<br><br>' +
+                           '👉 Track your active goals at <a href="habits.html" class="text-warning fw-bold">Habit Tracker</a>.'
+                },
+                {
+                    keywords: ['hi', 'hello', 'hey', 'namaste', 'morning', 'evening', 'help'],
+                    reply: "Hello! I'm your AuraGrowth AI Study Buddy 🤖.<br><br>" +
+                           "I will provide coding roadmaps, study habits, focus tips, and also wellness guidance. Click Above quick prompt chips or type the questions!"
+                }
+            ];
+
+            var defaultBotReply = 'Nenu ee topic meedha inka update avtunanu! Kinda unna topics lo help adagandi:<br>' +
+                                  '• <b>DSA & Coding Roadmaps</b><br>' +
+                                  '• <b>Habit Building & Daily Streaks</b><br>' +
+                                  '• <b>Exam Stress & Breathing Stretches</b>';
+
+            var launcher = document.getElementById('aura-bot-launcher');
+            var chatWin = document.getElementById('aura-chat-window');
+            var closeBtn = document.getElementById('aura-close-btn');
+            var chatForm = document.getElementById('aura-chat-form');
+            var chatInput = document.getElementById('aura-user-input');
+            var chatMessages = document.getElementById('aura-chat-messages');
+
+            if (!launcher || !chatWin) return;
+
+            launcher.addEventListener('click', function(e) {
+                e.stopPropagation();
+                var isHidden = window.getComputedStyle(chatWin).display === 'none';
+                chatWin.style.display = isHidden ? 'flex' : 'none';
+                if (isHidden && chatInput) chatInput.focus();
+            });
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    chatWin.style.display = 'none';
+                });
             }
-        ];
 
-        var defaultBotReply = 'Nenu ee topic meedha inka update avtunanu! Kinda unna topics lo help adagandi:<br>' +
-                              '• <b>DSA & Coding Roadmaps</b><br>' +
-                              '• <b>Habit Building & Daily Streaks</b><br>' +
-                              '• <b>Exam Stress & Breathing Stretches</b>';
+            function appendMessage(sender, text) {
+                var bubble = document.createElement('div');
+                bubble.className = 'chat-bubble ' + (sender === 'user' ? 'chat-user' : 'chat-bot');
+                bubble.innerHTML = text;
+                chatMessages.appendChild(bubble);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
 
-        var launcher = document.getElementById('aura-bot-launcher');
-        var chatWin = document.getElementById('aura-chat-window');
-        var closeBtn = document.getElementById('aura-close-btn');
-        var chatForm = document.getElementById('aura-chat-form');
-        var chatInput = document.getElementById('aura-user-input');
-        var chatMessages = document.getElementById('aura-chat-messages');
-
-        launcher.onclick = function() {
-            var isHidden = chatWin.style.display === 'none' || chatWin.style.display === '';
-            chatWin.style.display = isHidden ? 'flex' : 'none';
-            if (isHidden) chatInput.focus();
-        };
-
-        closeBtn.onclick = function() {
-            chatWin.style.display = 'none';
-        };
-
-        function appendMessage(sender, text) {
-            var bubble = document.createElement('div');
-            bubble.className = 'chat-bubble ' + (sender === 'user' ? 'chat-user' : 'chat-bot');
-            bubble.innerHTML = text;
-            chatMessages.appendChild(bubble);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function getBotResponse(query) {
-            var q = query.toLowerCase();
-            for (var i = 0; i < auraKnowledge.length; i++) {
-                var item = auraKnowledge[i];
-                for (var k = 0; k < item.keywords.length; k++) {
-                    if (q.includes(item.keywords[k])) {
-                        return item.reply;
+            function getBotResponse(query) {
+                var q = query.toLowerCase();
+                for (var i = 0; i < auraKnowledge.length; i++) {
+                    var item = auraKnowledge[i];
+                    for (var k = 0; k < item.keywords.length; k++) {
+                        if (q.indexOf(item.keywords[k]) !== -1) {
+                            return item.reply;
+                        }
                     }
                 }
+                return defaultBotReply;
             }
-            return defaultBotReply;
-        }
 
-        window.sendAuraPrompt = function(promptText) {
-            appendMessage('user', promptText);
+            window.sendAuraPrompt = function(promptText) {
+                appendMessage('user', promptText);
 
-            var indicator = document.createElement('div');
-            indicator.className = 'chat-bubble chat-bot';
-            indicator.id = 'aura-typing-indicator';
-            indicator.innerHTML = '<i class="fa-solid fa-ellipsis fa-fade"></i> AuraBot is thinking...';
-            chatMessages.appendChild(indicator);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
+                var indicator = document.createElement('div');
+                indicator.className = 'chat-bubble chat-bot';
+                indicator.id = 'aura-typing-indicator';
+                indicator.innerHTML = '<i class="fa-solid fa-ellipsis fa-fade"></i> AuraBot is thinking...';
+                chatMessages.appendChild(indicator);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
 
-            setTimeout(function() {
-                var indEl = document.getElementById('aura-typing-indicator');
-                if (indEl) indEl.remove();
+                setTimeout(function() {
+                    var indEl = document.getElementById('aura-typing-indicator');
+                    if (indEl) indEl.remove();
 
-                var reply = getBotResponse(promptText);
-                appendMessage('bot', reply);
-            }, 400);
-        };
+                    var reply = getBotResponse(promptText);
+                    appendMessage('bot', reply);
+                }, 400);
+            };
 
-        chatForm.onsubmit = function(e) {
-            e.preventDefault();
-            var text = chatInput.value.trim();
-            if (!text) return;
-            chatInput.value = '';
-            window.sendAuraPrompt(text);
-        };
+            if (chatForm) {
+                chatForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var text = chatInput.value.trim();
+                    if (!text) return;
+                    chatInput.value = '';
+                    window.sendAuraPrompt(text);
+                });
+            }
+        });
     </script>
 
     <!-- Unified Real-time Habit & Streak Sync Engine -->
